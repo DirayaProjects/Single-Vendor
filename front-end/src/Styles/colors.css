@@ -1,0 +1,36 @@
+.primary-color{
+  color: #102542;
+}
+  
+.bg-primary{
+  background-color: #ffff;
+}
+  
+.white{
+  color: white;
+}
+
+.bg-secondary{
+    background-color: #303030;
+}
+.card-color{
+    background-color:#212121 ;
+}
+
+.btn-text{
+  color: #353535;
+}
+
+.bg-invisible{
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.red{
+  color: rgba(255, 0, 0, 0.679);
+}
+
+.white-op-80{
+  color: #ffffffcc;
+}
+
+

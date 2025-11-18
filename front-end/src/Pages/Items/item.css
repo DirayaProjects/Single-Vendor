@@ -1,0 +1,158 @@
+* {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+.product-page {
+  background-color: #fff;
+  color: #0b1e3d;
+}
+
+.product-wrapper {
+  padding-top: 30px;  
+  padding-bottom: 50px; 
+}
+
+.product-container {
+  background-color: #fff;
+  margin: auto;
+  width: 85%;
+  max-width: 1200px;
+  border-radius: 8px;
+  display: flex;
+  padding: 40px 20px;
+  gap: 60px;
+}
+
+.product-image-section {
+  flex: 1;
+}
+
+.main-image {
+  background-color: #ffefef;
+  height: 370px;
+  border-radius: 12px;
+}
+
+.thumbnail-row {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.thumb {
+  background-color: #ddd;
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+}
+
+.product-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.product-details h2 {
+  font-weight: 600;
+}
+
+.price {
+  font-weight: bold;
+  float: right;
+}
+
+.details {
+  color: #555;
+}
+
+.stars {
+  color: #0b1e3d;
+}
+
+/* Colors */
+.colors p {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.color-options {
+  display: flex;
+  gap: 10px;
+}
+
+.color-circle {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-circle:hover {
+  transform: scale(1.1);
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffefef;
+  padding: 5px 15px;
+  border-radius: 20px;
+  width: fit-content;
+  margin-bottom: 20px;
+}
+
+.quantity-control button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #0b1e3d;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.buy-now {
+  background-color: #0b1e3d;
+  color: white;
+  padding: 10px 35px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.add-cart {
+  border: 1px solid #0b1e3d;
+  background: none;
+  color: #0b1e3d;
+  padding: 8px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.buy-now:hover,
+.add-cart:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 900px) {
+  .product-container {
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+  }
+
+  .main-image {
+    height: 260px;
+  }
+
+  .price {
+    float: none;
+  }
+}

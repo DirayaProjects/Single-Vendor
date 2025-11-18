@@ -1,0 +1,118 @@
+/* ───────── Sidebar Container ───────── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 220px;
+  background-color: #102542;
+  color: #fff;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.sidebar.closed {
+  width: 60px;
+}
+
+/* ───────── Top Section (Logo + Toggle) ───────── */
+.top-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 1px solid #1a2c45;
+}
+
+.toggle-btn {
+  cursor: pointer;
+  font-size: 20px;
+  color: #fff;
+}
+
+/* ───────── Menu Base ───────── */
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* ───────── NavLink Styles ───────── */
+.nav-item {
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 15px 20px;
+  transition: background 0.25s ease, padding-left 0.25s ease;
+}
+
+/* Icon styling */
+.nav-item .icon {
+  font-size: 28px;
+  margin-right: 15px;
+}
+
+.sidebar.closed .nav-item {
+  justify-content: center;
+}
+
+.sidebar.closed .nav-item .icon {
+  margin-right: 0;
+}
+
+.sidebar.closed .nav-item span {
+  display: none;
+}
+
+.menu li:hover .nav-item {
+  background-color: #49567c;
+  border-radius: 5px;
+  padding-left: 10px;
+}
+
+.nav-item.active {
+  background-color: #1e3a63;
+  border-left: 4px solid #4fa3ff;
+  padding-left: 12px;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.nav-item.active span {
+  text-decoration: none !important;
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .sidebar.closed {
+    width: 100%;
+  }
+
+  .menu li {
+    justify-content: center;
+  }
+}
+.menu li .logout {
+  color: #fff;
+}
+
+.menu li:hover .logout {
+  background-color: #49567c;
+  border-radius: 5px;
+  padding-left: 10px;
+}

@@ -1,0 +1,142 @@
+.reviews-section {
+  width: 100%;
+  padding: 80px 0;
+  background-color:#ffffff;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.reviews-container {
+  max-width: 1200px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.reviews-container h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #102b49;
+  margin-bottom: 50px;
+}
+
+/* Carousel */
+.carousel {
+  width: 100%;
+  /* overflow: hidden; */
+  position: relative;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 30px;
+  animation: scroll 35s linear infinite;
+  width: max-content;
+}
+
+.carousel:hover .carousel-track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.review-card {
+  background-color: #102b49;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px #1a2c49;
+  padding: 30px;
+  min-width: 350px;
+  max-width: 350px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+}
+
+.review-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color:#ffffff;
+  font-size: 1rem;
+  font-weight: 500;   
+  margin-bottom: 20px;
+  
+}
+
+.profile {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.review-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.rating-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.avg-rating {
+  font-weight: bold;
+  color: #f7f4f4;
+}
+
+.starTest {
+  color: #ffd000; 
+  margin-bottom: 21px;
+}
+
+.review-flight {
+  color: #e9ecf1;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.review-text {
+  color: #f0eaea;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  .reviews-container h1 {
+    font-size: 1.6rem;
+  }
+
+  .review-card {
+    min-width: 260px;
+    max-width: 260px;
+    padding: 20px;
+  }
+
+  .carousel-track {
+    animation: scroll 25s linear infinite;
+  }
+}

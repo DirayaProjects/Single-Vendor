@@ -1,0 +1,255 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.landing {
+  font-family: "Inter", sans-serif;
+  background-color: #f9f9f9;
+  padding-top: 75px;
+}
+
+.hero {
+  background-color: #0f223d;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-radius: 15px;
+  margin: 30px 60px;
+  padding: 80px;
+}
+
+.hero-text h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #f6f6f6;
+}
+.hero-text p {
+  font-size: 20px;
+  color: #f6f6f6;
+}
+.hero-image {
+  background: rgba(255, 255, 255, 0.2);
+  width: 300px;
+  height: 300px;
+  border-radius: 10px;
+  padding-right: 150px;
+}
+
+.promos {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: -80px 0px;
+  padding: 0 0 90px 0;
+}
+.promo-card {
+  background-color: #ffd6d6;
+  color: #0f223d;
+  text-align: center;
+  border-radius: 12px;
+  padding: 30px;
+  width: 300px;
+}
+.promo-card h1 {
+  font-size: 40px;
+  margin: 5px 0;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 20px 70px;
+  justify-content: space-between;
+  color: #0f223d;
+}
+.filter-label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 500;
+  font-size: 16px;
+}
+.filters select,
+.filters input[type="number"] {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #0f223d;
+  cursor: pointer;
+  width: 120px;
+}
+.filters select:hover {
+  border-color: #ff6b6b;
+}
+.sort-btn {
+  background: #0f223d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 0 15px;
+  border-radius: 8px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  padding: 20px 40px;
+}
+
+.product-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.image-placeholder {
+  background: #f6f6f6;
+  border-radius: 10px;
+  height: 180px;
+  width: 100%;
+  max-width: 220px;
+  position: relative;
+  margin-bottom: 10px;
+}
+.fav-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 16px;
+  color: #ccc;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+}
+.fav-icon.favorited,
+.fav-icon:hover {
+  color: #e63946;
+  transform: scale(1.2);
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.product-info h4 {
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: #161f55;
+}
+.price {
+  font-weight: bold;
+  margin: 4px 0 8px;
+  color: #0f223d;
+}
+.stars {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.star {
+  color: #ccc;
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.2s, transform 0.2s;
+}
+.star.filled {
+  color: #fbb034;
+}
+.star:hover {
+  transform: scale(1.2);
+}
+
+.add-btn {
+  background: #0f223d;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+.add-btn:hover {
+  background-color: #161f55;
+}
+
+.view-all-container {
+  text-align: center;
+  margin: 20px 0 40px 0;
+}
+.view-all-btn {
+  background: #0f223d;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: 0.3s;
+}
+.view-all-btn:hover {
+  background: #163154;
+}
+
+.featured {
+  background: #0f223d;
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+}
+.featured-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+}
+.featured-card {
+  background: white;
+  height: 180px;
+  width: 150px;
+  border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+  .hero-image {
+    width: 100%;
+    height: 200px;
+    margin-top: 20px;
+    background-image: none;
+  }
+  .featured-grid {
+    flex-direction: column;
+  }
+  .filters {
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px;
+  }
+  .products {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+  .filters select,
+  .filters input[type="number"] {
+    width: 100%;
+  }
+}

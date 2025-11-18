@@ -1,0 +1,307 @@
+/* ===================== ROOT COLORS ===================== */
+:root {
+  --primary-dark: #0f223d;           
+  --primary-dark-light: #19345c;     
+  --primary-yellow: #f4c542;         
+  --gray-text: #6b7280;
+  --light-border: #d1d5db;
+  --bg-soft: #f5f7fa;
+
+  --danger: #d64545;
+  --danger-hover: #bb3434;
+}
+
+/* ===================== GLOBAL RESET ===================== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-soft);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* ===================== PAGE LAYOUT ===================== */
+.orders-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+.orders-content {
+  flex: 1;
+  padding: 22px 28px;
+  margin-left: 220px;
+  transition: 0.3s ease;
+}
+
+.orders-content.sidebar-closed {
+  margin-left: 60px;
+}
+
+/* ===================== PAGE TITLE ===================== */
+.orders-content h2 {
+  color: var(--primary-dark);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: -0.4px;
+}
+
+/* ===================== FILTER ROW ===================== */
+.filters-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.filter-buttons {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+}
+
+/* ===================== BUTTONS ===================== */
+.primary-btn svg,
+.primary-btn-outline svg {
+  font-size: 13px !important;
+}
+
+/* Primary Button */
+.primary-btn {
+  background-color: var(--primary-dark) !important;
+  color: #fff !important;
+  padding: 10px 14px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.primary-btn:hover {
+  background-color: var(--primary-dark-light) !important;
+}
+
+/* Outline Button */
+.primary-btn-outline {
+  padding: 10px 14px !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: var(--primary-dark) !important;
+  border: 2px solid var(--primary-dark) !important;
+  font-weight: 400 !important;
+  cursor: pointer !important;
+  transition: 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.primary-btn-outline:hover {
+  background-color: var(--primary-dark) !important;
+  color: #fff !important;
+}
+
+/* ===================== TABLE ===================== */
+.orders-table-wrapper {
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+.orders-table {
+  width: 100%;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0px 10px 30px rgba(0,0,0,0.06);
+}
+
+.orders-table thead th {
+  background: var(--primary-dark);
+  color: #fff;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.orders-table tbody tr {
+  transition: 0.2s ease;
+}
+
+.orders-table tbody tr:hover {
+  background: #eef3f8;
+  transform: translateY(-1px);
+}
+
+.orders-table tbody td {
+  padding: 16px 12px;
+  text-align: center;
+}
+
+/* Status badge */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #fff;
+}
+
+.status-badge.completed {
+  background: var(--primary-dark);
+}
+
+.status-badge.pending {
+  background: #ff9800;
+}
+
+/* Row actions */
+.actions-cell {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.actions-cell button {
+  border-radius: 8px;
+}
+
+.MuiIconButton-root {
+  color: var(--primary-dark);
+}
+
+/* ===================== PAGINATION ===================== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid var(--primary-dark);
+  color: var(--primary-dark);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.pagination button:hover {
+  background: var(--primary-dark-light);
+  color: white;
+}
+
+.pagination .active {
+  background: var(--primary-dark);
+  color: white;
+}
+
+/* ===================== MODAL ===================== */
+.MuiDialog-paper {
+  padding: 4px 6px !important;
+  border-radius: 12px !important;
+}
+
+/* Modal Title */
+.MuiDialogTitle-root {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: var(--primary-dark) !important;
+  border-bottom: 2px solid var(--primary-yellow) !important;
+  padding-bottom: 10px !important;
+  margin-bottom: 8px !important;
+}
+
+/* Close button */
+.modal-close-btn {
+  color: var(--danger) !important;
+  background: transparent !important;
+  font-size: 18px !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.modal-close-btn:hover {
+  color: var(--danger-hover) !important;
+  background: transparent !important;
+}
+
+/* Modal action buttons */
+.modal-new-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 18px 22px !important;
+}
+
+/* make both buttons same width */
+.modal-new-actions button {
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  text-align: center !important;
+}
+
+/* .modal-cancel-btn {
+  background: transparent !important;
+  color: var(--primary-dark) !important;
+  border: 1px solid var(--primary-dark) !important;
+}
+
+.modal-cancel-btn:hover {
+  background: var(--primary-dark) !important;
+  color: #fff !important;
+} */
+
+.modal-save-btn {
+  background: var(--primary-dark) !important;
+  color: white !important;
+    border: 1px solid var(--primary-dark) !important;
+
+  
+}
+
+.modal-save-btn:hover {
+  background: var(--primary-dark-light) !important;
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+  .orders-content {
+    margin-left: 0;
+    padding: 14px;
+  }
+
+  .filters-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-buttons {
+    margin-left: 0;
+  }
+
+  .modal-new-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-new-actions button {
+    width: 100% !important;
+    min-width: unset !important;
+  }
+}
