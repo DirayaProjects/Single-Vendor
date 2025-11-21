@@ -1,16 +1,22 @@
 * {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
 
 .product-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   background-color: #fff;
   color: #0b1e3d;
 }
 
 .product-wrapper {
-  padding-top: 30px;  
-  padding-bottom: 50px; 
+  flex: 1; 
+  padding-top: 120px; 
+  padding-bottom: 60px; 
 }
 
 .product-container {
@@ -30,7 +36,7 @@
 
 .main-image {
   background-color: #ffefef;
-  height: 370px;
+  height: 380px;
   border-radius: 12px;
 }
 
@@ -42,8 +48,8 @@
 
 .thumb {
   background-color: #ddd;
-  width: 60px;
-  height: 60px;
+  width: 65px;
+  height: 65px;
   border-radius: 8px;
 }
 
@@ -51,7 +57,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
 }
 
 .product-details h2 {
@@ -60,7 +66,7 @@
 
 .price {
   font-weight: bold;
-  float: right;
+  font-size: 1.2rem;
 }
 
 .details {
@@ -71,10 +77,9 @@
   color: #0b1e3d;
 }
 
-/* Colors */
 .colors p {
   font-size: 0.9rem;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .color-options {
@@ -83,8 +88,8 @@
 }
 
 .color-circle {
-  width: 25px;
-  height: 25px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.2s;
@@ -99,16 +104,15 @@
   align-items: center;
   gap: 10px;
   background-color: #ffefef;
-  padding: 5px 15px;
+  padding: 8px 18px;
   border-radius: 20px;
   width: fit-content;
-  margin-bottom: 20px;
 }
 
 .quantity-control button {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   cursor: pointer;
   color: #0b1e3d;
 }
@@ -121,7 +125,7 @@
 .buy-now {
   background-color: #0b1e3d;
   color: white;
-  padding: 10px 35px;
+  padding: 12px 38px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -131,14 +135,14 @@
   border: 1px solid #0b1e3d;
   background: none;
   color: #0b1e3d;
-  padding: 8px 25px;
+  padding: 10px 30px;
   border-radius: 8px;
   cursor: pointer;
 }
 
 .buy-now:hover,
 .add-cart:hover {
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 @media (max-width: 900px) {
@@ -150,9 +154,5 @@
 
   .main-image {
     height: 260px;
-  }
-
-  .price {
-    float: none;
   }
 }

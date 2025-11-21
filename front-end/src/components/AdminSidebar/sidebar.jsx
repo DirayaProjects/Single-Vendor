@@ -9,6 +9,7 @@ import {
   FaCogs,
   FaSignOutAlt,
   FaBars,
+  FaTools
 } from "react-icons/fa";
 
 const Sidebar = ({ onToggle }) => {
@@ -71,13 +72,20 @@ const Sidebar = ({ onToggle }) => {
           </NavLink>
         </li>
 
-         <li onClick={handleLogout}>
-            <div className="nav-item">
-                <FaSignOutAlt className="icon" />
-                <span>Logout</span>
-            </div>
+        {/* NEW SETTINGS TAB */}
+        <li>
+          <NavLink to="/admin/settings" className="nav-item">
+            <FaTools className="icon" />
+            {isOpen && <span>Settings</span>}
+          </NavLink>
         </li>
 
+        <li onClick={handleLogout}>
+          <div className="nav-item logout">
+            <FaSignOutAlt className="icon" />
+            {isOpen && <span>Logout</span>}
+          </div>
+        </li>
 
       </ul>
     </div>

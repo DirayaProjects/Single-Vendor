@@ -1,4 +1,3 @@
-/* Header */
 .navbar {
   background-color: #0f223d; /* primary color */
   color: white;
@@ -6,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 15px 30px;
-  position: fixed; /* fixed at top */
+  position: fixed; 
   top: 0;
   left: 0;
   width: 100%;
@@ -96,6 +95,13 @@
   cursor: pointer;
   position: relative;
 }
+.cart{
+  color: #ffff;
+  top: 2px;
+}
+.cart:hover{
+  color: cadetblue;
+}
 
 .nav-icon .counter {
   position: absolute;
@@ -150,7 +156,6 @@
   border-color: white;
 }
 
-/* Mobile Responsive */
 @media (max-width: 900px) {
   .navbar {
     flex-wrap: wrap;
@@ -203,7 +208,6 @@
   }
 }
 
-/* Padding to avoid overlap */
 body, .main-content {
-  padding-top: 70px; /* adjust to navbar height */
+  padding-top: 70px; 
 }

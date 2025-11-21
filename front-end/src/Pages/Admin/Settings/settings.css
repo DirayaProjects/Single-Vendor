@@ -1,0 +1,124 @@
+.settings-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.settings-content {
+  flex: 1;
+  padding: 30px;
+  transition: margin-left 0.3s ease;
+}
+
+.settings-content.sidebar-open {
+  margin-left: 220px;
+}
+
+.settings-content.sidebar-closed {
+  margin-left: 60px;
+}
+
+.page-title {
+  font-size: 26px;
+  margin-bottom: 25px;
+  color: #102542;
+  font-weight: 700;
+}
+
+/* Cards */
+.settings-card {
+  background: #fff;
+  padding: 25px;
+  margin-bottom: 25px;
+  border-radius: 10px;
+  border-left: 5px solid #102542;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.card-icon {
+  font-size: 22px;
+  margin-right: 10px;
+  color: #102542;
+}
+
+.empty-text {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.preview-img {
+  width: 200px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+/* Inputs */
+.input-group {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #102542;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+/* Buttons */
+.delete-btn {
+  background-color: #c0392b;
+  color: #fff;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.save-btn {
+  background-color: #102542;
+  color: white;
+  padding: 14px 25px;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.save-icon {
+  font-size: 18px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settings-content.sidebar-open,
+  .settings-content.sidebar-closed {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .preview-img {
+    width: 100%;
+    max-width: 280px;
+  }
+}

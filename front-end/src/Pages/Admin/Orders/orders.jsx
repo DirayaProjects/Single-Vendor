@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./orders.css";
 import Sidebar from "../../../components/AdminSidebar/sidebar";
 import {
@@ -16,6 +16,8 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { FaSearch, FaTrash, FaEdit, FaPlus, FaDownload, FaShoppingCart, FaTimes } from "react-icons/fa";
 import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import dayjs from "dayjs";
 
 const Orders = () => {
@@ -31,17 +33,14 @@ const Orders = () => {
     { id: 3, customer: "Mike Johnson", total: "$200", status: "Completed", date: "2025-01-10", description: "Toys" },
   ]);
 
-  // Modal & form state
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [currentOrder, setCurrentOrder] = useState(null);
   const [formData, setFormData] = useState({ customer: "", total: "", status: "Pending", date: dayjs(), description: "" });
 
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Filtering
   const filteredOrders = orders.filter((o) => {
     const matchesSearch = o.customer.toLowerCase().includes(search.toLowerCase()) || o.id.toString().includes(search);
     const matchesStatus = statusFilter === "All" ? true : o.status === statusFilter;
@@ -57,16 +56,97 @@ const Orders = () => {
   const goToNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const goToPage = (page) => setCurrentPage(page);
 
-  // Export CSV
+  const [exportOpen, setExportOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const [dragging, setDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 100, y: 100 });
+  const offset = useRef({ x: 0, y: 0 });
+
+  const toggleExport = () => setExportOpen(!exportOpen);
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    setDragging(true);
+    offset.current = { x: e.clientX - position.x, y: e.clientY - position.y };
+  };
+
+  const handleMouseMove = (e) => {
+    if (!dragging) return;
+    setPosition({ x: e.clientX - offset.current.x, y: e.clientY - offset.current.y });
+  };
+
+  const handleMouseUp = () => setDragging(false);
+
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0];
+    setDragging(true);
+    offset.current = { x: touch.clientX - position.x, y: touch.clientY - position.y };
+  };
+
+  const handleTouchMove = (e) => {
+    if (!dragging) return;
+    const touch = e.touches[0];
+    setPosition({ x: touch.clientX - offset.current.x, y: touch.clientY - offset.current.y });
+  };
+
+  const handleTouchEnd = () => setDragging(false);
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchend", handleTouchEnd);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  });
+
   const exportCSV = () => {
     let csv = "Order ID,Customer,Total,Status,Date,Description\n";
     filteredOrders.forEach((o) => {
       csv += `${o.id},${o.customer},${o.total},${o.status},${o.date},${o.description}\n`;
     });
     saveAs(new Blob([csv], { type: "text/csv;charset=utf-8" }), "orders.csv");
+    setExportOpen(false);
   };
 
-  // Edit / Add handlers
+  const exportPDF = () => {
+    const doc = new jsPDF();
+    const tableColumn = ["ID", "Customer", "Total", "Status", "Date", "Description"];
+    const tableRows = filteredOrders.map(o => [o.id, o.customer, o.total, o.status, o.date, o.description]);
+    doc.autoTable({ head: [tableColumn], body: tableRows });
+    doc.save("orders.pdf");
+    setExportOpen(false);
+  };
+
+  const exportWord = () => {
+    let content = "<table border='1'><tr><th>ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th><th>Description</th></tr>";
+    filteredOrders.forEach(o => {
+      content += `<tr><td>${o.id}</td><td>${o.customer}</td><td>${o.total}</td><td>${o.status}</td><td>${o.date}</td><td>${o.description}</td></tr>`;
+    });
+    content += "</table>";
+    const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+    saveAs(blob, "orders.doc");
+    setExportOpen(false);
+  };
+
+  const printOrders = () => {
+    const printWindow = window.open("", "_blank");
+    let html = "<h2>Orders</h2><table border='1' style='border-collapse: collapse; width:100%;'>";
+    html += "<tr><th>ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th><th>Description</th></tr>";
+    filteredOrders.forEach(o => {
+      html += `<tr><td>${o.id}</td><td>${o.customer}</td><td>${o.total}</td><td>${o.status}</td><td>${o.date}</td><td>${o.description}</td></tr>`;
+    });
+    html += "</table>";
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
+    setExportOpen(false);
+  };
+
   const handleEdit = (order) => {
     setCurrentOrder(order);
     setFormData({ customer: order.customer, total: order.total, status: order.status, date: dayjs(order.date), description: order.description });
@@ -100,7 +180,6 @@ const Orders = () => {
     setOrders(orders.filter((o) => o.id !== id));
   };
 
-  // Open Add modal preset
   const openAddModal = () => {
     setFormData({ customer: "", total: "", status: "Pending", date: dayjs(), description: "" });
     setOpenAdd(true);
@@ -113,7 +192,6 @@ const Orders = () => {
         <div className={`orders-content ${sidebarOpen ? "" : "sidebar-closed"}`}>
           <h2><FaShoppingCart /> Orders Management</h2>
 
-          {/* Filters + actions */}
           <div className="filters-row">
             <TextField
               placeholder="Search orders..."
@@ -152,13 +230,54 @@ const Orders = () => {
               slotProps={{ textField: { size: "small" } }}
             />
 
-            <div className="filter-buttons">
-              <Button variant="contained" className="primary-btn" startIcon={<FaPlus />} onClick={openAddModal}>Add Order</Button>
-              <Button variant="contained" className="primary-btn" startIcon={<FaDownload />} onClick={exportCSV}>Export CSV</Button>
-            </div>
+
+            <div
+            className="export-dropdown"
+            ref={dropdownRef}
+            style={{
+              top: position.y,
+              right: position.x,
+              zIndex: 9999,
+              cursor: dragging ? "grabbing" : "grab",
+            }}
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+          >
+            <Button
+              variant="contained"
+              className="primary-btn"
+              startIcon={<FaDownload />}
+              onClick={toggleExport}
+            >
+              Export ▼
+            </Button>
+
+            {exportOpen && (
+              <div
+                className="export-menu"
+                style={{
+                  position: "absolute",
+                  
+                  background: "#fff",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "10px",
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+                  zIndex: 9999,
+                  minWidth: "130px",
+                  cursor: "default",
+                }}
+              >
+                <div className="export-item" onClick={exportCSV}>CSV</div>
+                <div className="export-item" onClick={exportPDF}>PDF</div>
+                <div className="export-item" onClick={exportWord}>Word</div>
+                <div className="export-item" onClick={printOrders}>Print</div>
+              </div>
+            )}
+          </div>
           </div>
 
-          {/* Table */}
+          
+
           <div className="orders-table-wrapper">
             <table className="orders-table" role="table">
               <thead>
@@ -189,7 +308,7 @@ const Orders = () => {
                       <IconButton size="small" onClick={() => handleEdit(order)} aria-label="edit">
                         <FaEdit />
                       </IconButton>
-                      <IconButton  className="del"size="small" color="error" onClick={() => deleteOrder(order.id)} aria-label="delete">
+                      <IconButton size="small" color="error" onClick={() => deleteOrder(order.id)} aria-label="delete">
                         <FaTrash />
                       </IconButton>
                     </td>
@@ -207,7 +326,6 @@ const Orders = () => {
             </table>
           </div>
 
-          {/* Pagination */}
           <div className="pagination">
             <button onClick={goToPrev} disabled={currentPage === 1}>Previous</button>
             {[...Array(totalPages)].map((_, i) => (
@@ -218,123 +336,6 @@ const Orders = () => {
             <button onClick={goToNext} disabled={currentPage === totalPages}>Next</button>
           </div>
 
-          {/* ADD Dialog */}
-          <Dialog open={openAdd} onClose={() => setOpenAdd(false)} fullWidth maxWidth="sm">
-            <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pr: 0 }}>
-              Add Order
-              <button className="modal-close-btn" onClick={() => setOpenAdd(false)} aria-label="close">
-                <FaTimes />
-              </button>
-            </DialogTitle>
-
-            <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: { xs: 1.5, sm: 2 } }} className="modal-new-content">
-              <TextField
-                label="Customer"
-                fullWidth
-                variant="outlined"
-                margin="dense"
-                value={formData.customer}
-                onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
-              />
-              <TextField
-                label="Total"
-                fullWidth
-                variant="outlined"
-                margin="dense"
-                value={formData.total}
-                onChange={(e) => setFormData({ ...formData, total: e.target.value })}
-              />
-              <TextField
-                label="Description"
-                fullWidth
-                variant="outlined"
-                margin="dense"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              />
-              <TextField
-                select
-                label="Status"
-                fullWidth
-                margin="dense"
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-              >
-                <MenuItem value="Completed">Completed</MenuItem>
-                <MenuItem value="Pending">Pending</MenuItem>
-              </TextField>
-              <DatePicker
-                label="Date"
-                value={formData.date}
-                onChange={(newVal) => setFormData({ ...formData, date: newVal })}
-                slotProps={{ textField: { size: "small", margin: "dense" } }}
-              />
-            </DialogContent>
-
-            <DialogActions sx={{ px: { xs: 2, sm: 3 }, pb: { xs: 2, sm: 3 } }} className="modal-new-actions">
-              {/* <Button onClick={() => setOpenAdd(false)} className="primary-btn-outline">Cancel</Button> */}
-              <Button onClick={saveAdd} className="primary-btn" variant="contained">Save</Button>
-            </DialogActions>
-          </Dialog>
-
-          {/* EDIT Dialog */}
-          <Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth maxWidth="sm">
-            <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pr: 0 }}>
-              Edit Order
-              <button className="modal-close-btn" onClick={() => setOpenEdit(false)} aria-label="close">
-                <FaTimes />
-              </button>
-            </DialogTitle>
-
-            <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: { xs: 1.5, sm: 2 } }} className="modal-new-content">
-              <TextField
-                label="Customer"
-                fullWidth
-                variant="outlined"
-                margin="dense"
-                value={formData.customer}
-                onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
-              />
-              <TextField
-                label="Total"
-                fullWidth
-                variant="outlined"
-                margin="dense"
-                value={formData.total}
-                onChange={(e) => setFormData({ ...formData, total: e.target.value })}
-              />
-              <TextField
-                label="Description"
-                fullWidth
-                variant="outlined"
-                margin="dense"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              />
-              <TextField
-                select
-                label="Status"
-                fullWidth
-                margin="dense"
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-              >
-                <MenuItem value="Completed">Completed</MenuItem>
-                <MenuItem value="Pending">Pending</MenuItem>
-              </TextField>
-              <DatePicker
-                label="Date"
-                value={formData.date}
-                onChange={(newVal) => setFormData({ ...formData, date: newVal })}
-                slotProps={{ textField: { size: "small", margin: "dense" } }}
-              />
-            </DialogContent>
-
-            <DialogActions sx={{ px: { xs: 2, sm: 3 }, pb: { xs: 2, sm: 3 } }} className="modal-new-actions">
-              {/* <Button onClick={() => setOpenEdit(false)} className="primary-btn-outline">Cancel</Button> */}
-              <Button onClick={saveEdit} className="primary-btn" variant="contained">Save</Button>
-            </DialogActions>
-          </Dialog>
         </div>
       </div>
     </LocalizationProvider>

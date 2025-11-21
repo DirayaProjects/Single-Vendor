@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./header.css";
 import { FaSearch, FaShoppingBag, FaHeart, FaBars, FaTimes } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import AuthModal from "../AuthModal/AuthModal"; // adjust path
 
 const Header = () => {
@@ -50,10 +51,16 @@ const Header = () => {
         </div>
 
         <div className="navbar-right">
-          {/* Login & Sign Up buttons */}
-          <button className="nav-btn" onClick={() => openAuthModal("login")}>Login</button>
-          <button className="nav-btn sign" onClick={() => openAuthModal("signup")}>Sign Up</button>
+          {/* Login & Sign Up */}
+          <button className="nav-btn" onClick={() => openAuthModal("login")}>
+            Login
+          </button>
 
+          <button className="nav-btn sign" onClick={() => openAuthModal("signup")}>
+            Sign Up
+          </button>
+
+          {/* Language Dropdown */}
           <select
             className="dropdown-select"
             value={language}
@@ -63,21 +70,28 @@ const Header = () => {
             <option value="Ar">Ar</option>
           </select>
 
-          <FaShoppingBag className="nav-icon" />
+          {/* Cart → Navigates to Cart Page */}
+          <Link to="/cart">
+            <FaShoppingBag className="nav-icon cart" style={{ cursor: "pointer" }} />
+          </Link>
+
           <FaHeart className="nav-icon" />
 
+          {/* Avatar */}
           <img
             src="https://i.pravatar.cc/35"
             alt="User Avatar"
             className="user-avatar"
           />
 
+          {/* Mobile Menu Toggle */}
           <div className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <FaTimes /> : <FaBars />}
           </div>
         </div>
       </header>
 
+      {/* AUTH MODAL */}
       {showAuth && (
         <AuthModal
           onClose={() => setShowAuth(false)}

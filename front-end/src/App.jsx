@@ -8,7 +8,11 @@ import CategoriesPage from "./Pages/Admin/Categories/CategoriesPage";
 import ProductsPage from "./Pages/Admin/Products/products";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AllProducts from './Pages/AllProducts/allProducts';
-import Cart from  './Pages/Cart/cart'
+import Cart from  './Pages/Cart/cart';
+import Item from './Pages/Items/item';
+import SettingsPage from './Pages/Admin/Settings/settings';
+
+
 function App() {
   return (
     <Router>
@@ -17,6 +21,8 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/products" element={<AllProducts/>} />
         <Route path="/cart" element={<Cart/>}/>
+        <Route path="/item" element={<Item/>}/>
+
 
         {/* Admin panel */}
         <Route
@@ -31,6 +37,7 @@ function App() {
                   <Route path="products" element={<ProductsPage />} />
                   <Route path="categories" element={<CategoriesPage />} />
                   <Route path="attributes" element={<AttributesPage />} />
+                  <Route path='settings' element={<SettingsPage/>}/>
                 </Routes>
               </div>
           }

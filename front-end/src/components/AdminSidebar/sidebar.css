@@ -92,6 +92,7 @@
   text-decoration: none !important;
 }
 
+/* Responsive */
 @media screen and (max-width: 768px) {
   .sidebar {
     position: relative;
@@ -107,6 +108,7 @@
     justify-content: center;
   }
 }
+
 .menu li .logout {
   color: #fff;
 }
