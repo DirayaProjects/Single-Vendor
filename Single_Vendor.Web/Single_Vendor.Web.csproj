@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-Single_Vendor.Web-09a9ee65-f0aa-49fd-a5e5-0bebc46b9759</UserSecretsId>
+    <SpaRoot>$(MSBuildProjectDirectory)\..\Single_Vendor.Client\</SpaRoot>
+    <!-- Set SkipSpaBuild=true (e.g. dotnet build -p:SkipSpaBuild=true) to skip npm when iterating on API only. -->
+    <SkipSpaBuild Condition="'$(SkipSpaBuild)' == ''">false</SkipSpaBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.23" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.23">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Single_Vendor.Application\Single_Vendor.Application.csproj" />
+    <ProjectReference Include="..\Single_Vendor.Core\Single_Vendor.Core.csproj" />
+    <ProjectReference Include="..\Single_Vendor.Infrastructure\Single_Vendor.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <Target Name="BuildReactApp" BeforeTargets="BeforeBuild" Condition="'$(SkipSpaBuild)' != 'true' And Exists('$(SpaRoot)package.json')">
+    <Error Text="Run npm install in Single_Vendor.Client (once), or build with -p:SkipSpaBuild=true to skip the React app." Condition="!Exists('$(SpaRoot)node_modules')" />
+    <RemoveDir Directories="$(MSBuildProjectDirectory)\wwwroot\static" Condition="Exists('$(MSBuildProjectDirectory)\wwwroot\static')" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+    <ItemGroup>
+      <_ReactPublish Include="$(SpaRoot)build\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_ReactPublish)" DestinationFiles="@(_ReactPublish->'$(MSBuildProjectDirectory)\wwwroot\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

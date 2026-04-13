@@ -1,0 +1,48 @@
+.footer {
+  background: var(--store-footer-bg, #0f223d);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  flex-wrap: wrap;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.footer-right p{
+  margin: 0;
+  font-size: 16px;}
+
+.social-icons i {
+  font-size: 18px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.social-icons i:hover {
+  color: var(--store-accent, #ffd6d6);
+}
+
+.social-icon-link {
+  color: inherit;
+  text-decoration: none;
+  margin-left: 8px;
+  display: inline-flex;
+}
+
+.social-icon-link--muted {
+  opacity: 0.55;
+}
+
+.footer-dot {
+  opacity: 0.8;
+}
+
+.footer-phone {
+  white-space: nowrap;
+}

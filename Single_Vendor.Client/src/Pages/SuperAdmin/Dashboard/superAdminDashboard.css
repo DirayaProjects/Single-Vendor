@@ -1,0 +1,66 @@
+.superadmin-dashboard-title {
+  color: #1a237e;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 8px;
+}
+
+.superadmin-dashboard-lead {
+  color: #555;
+  margin: 0 0 24px;
+  font-size: 14px;
+  max-width: 640px;
+  line-height: 1.5;
+}
+
+.superadmin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.superadmin-stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(26, 35, 126, 0.08);
+  border-left: 4px solid #1a237e;
+}
+
+.superadmin-stat-card h3 {
+  margin: 0;
+  font-size: 28px;
+  color: #1a237e;
+}
+
+.superadmin-stat-card p {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+}
+
+.superadmin-dashboard-error {
+  color: #b00020;
+  margin-bottom: 16px;
+}
+
+.superadmin-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.superadmin-chart-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(26, 35, 126, 0.08);
+}
+
+.superadmin-chart-card h3 {
+  margin: 0 0 12px;
+  color: #1a237e;
+  font-size: 16px;
+}

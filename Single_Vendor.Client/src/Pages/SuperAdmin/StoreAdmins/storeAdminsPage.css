@@ -1,0 +1,256 @@
+.store-admins-title {
+  color: #1a237e;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 8px;
+}
+
+.store-admins-lead {
+  color: #555;
+  margin: 0 0 20px;
+  font-size: 14px;
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+.store-admins-panel {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(26, 35, 126, 0.06);
+}
+
+.store-admins-panel h2 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  color: #1a237e;
+}
+
+.store-admins-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+@media (max-width: 768px) {
+  .store-admins-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+.store-admins-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.store-admins-form input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.store-admins-form button {
+  padding: 10px 20px;
+  background: #1a237e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  height: 42px;
+}
+
+.store-admins-form > button[type="submit"] {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.store-admins-features {
+  grid-column: 1 / -1;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 0;
+}
+
+.store-admins-features legend {
+  font-weight: 600;
+  color: #1a237e;
+  padding: 0 6px;
+}
+
+.store-admins-features-hint {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+
+.store-admins-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px 16px;
+}
+
+.store-admins-feature-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.store-admins-feature-row input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.store-admins-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.store-admins-table-wrap {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(26, 35, 126, 0.06);
+}
+
+.store-admins-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.store-admins-table th {
+  text-align: left;
+  padding: 14px 16px;
+  background: #ede7f6;
+  color: #1a237e;
+  font-weight: 600;
+}
+
+.store-admins-table td {
+  padding: 12px 16px;
+  border-top: 1px solid #eee;
+}
+
+.store-admins-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.store-admins-badge.ok {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.store-admins-badge.warn {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.store-admins-error {
+  color: #b00020;
+  margin-bottom: 12px;
+}
+
+.store-admins-refresh {
+  margin-bottom: 12px;
+}
+
+.store-admins-refresh button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #1a237e;
+  background: #fff;
+  color: #1a237e;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.store-admins-features-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.store-admins-features-actions button {
+  padding: 6px 12px;
+  border: 1px solid #1a237e;
+  border-radius: 8px;
+  background: #fff;
+  color: #1a237e;
+  cursor: pointer;
+}
+
+.store-admins-row-btn {
+  padding: 6px 12px;
+  border: 1px solid #1a237e;
+  border-radius: 8px;
+  background: #fff;
+  color: #1a237e;
+  cursor: pointer;
+}
+
+.store-admins-edit-box {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 14px;
+  background: #fafbff;
+}
+
+.store-admins-edit-box h3 {
+  margin: 0 0 12px;
+  color: #1a237e;
+}
+
+.store-admins-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.store-admins-edit-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.store-admins-edit-grid input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.store-admins-edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.store-admins-edit-actions button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #1a237e;
+  background: #1a237e;
+  color: #fff;
+  cursor: pointer;
+}
+
+.store-admins-edit-actions button:last-child {
+  background: #fff;
+  color: #1a237e;
+}

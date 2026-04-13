@@ -1,0 +1,249 @@
+.settings-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.settings-content {
+  flex: 1;
+  padding: 30px;
+  transition: margin-left 0.3s ease;
+}
+
+.settings-content.sidebar-open {
+  margin-left: 220px;
+}
+
+.settings-content.sidebar-closed {
+  margin-left: 60px;
+}
+
+.page-title {
+  font-size: 26px;
+  margin-bottom: 25px;
+  color: #102542;
+  font-weight: 700;
+}
+
+.settings-sub {
+  margin: -12px 0 20px;
+  font-size: 14px;
+  color: #555;
+  max-width: 720px;
+  line-height: 1.45;
+}
+
+.settings-banner-error {
+  background: #fde8e8;
+  color: #b71c1c;
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+/* Cards */
+.settings-card {
+  background: #fff;
+  padding: 25px;
+  margin-bottom: 25px;
+  border-radius: 10px;
+  border-left: 5px solid #102542;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.card-icon {
+  font-size: 22px;
+  margin-right: 10px;
+  color: #102542;
+}
+
+.empty-text {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.preview-img {
+  width: 200px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.preview-img.banner-preview {
+  width: 100%;
+  max-width: 480px;
+}
+
+.settings-card-share {
+  border-left-color: #1e6f5c;
+}
+
+.share-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.share-link-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 14px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: ui-monospace, monospace;
+  background: #f8fafc;
+}
+
+.share-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #102542;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.share-copy-btn:hover {
+  filter: brightness(1.08);
+}
+
+.color-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.color-row-label {
+  min-width: 120px;
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+}
+
+.color-picker {
+  width: 44px;
+  height: 40px;
+  padding: 0;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.color-hex-input {
+  flex: 1;
+  min-width: 140px;
+  max-width: 200px;
+  padding: 10px 12px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: ui-monospace, monospace;
+}
+
+/* Inputs */
+.input-group {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #102542;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+/* Buttons */
+.delete-btn {
+  background-color: #c0392b;
+  color: #fff;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.save-btn {
+  background-color: #102542;
+  color: white;
+  padding: 14px 25px;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.save-icon {
+  font-size: 18px;
+}
+
+.promo-slots-editor {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.promo-slot-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  background: #fafafa;
+}
+
+.promo-slot-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: #102542;
+}
+
+.promo-slot-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settings-content.sidebar-open,
+  .settings-content.sidebar-closed {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .preview-img {
+    width: 100%;
+    max-width: 280px;
+  }
+}
