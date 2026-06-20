@@ -111,8 +111,8 @@ public class AdminOrdersController : ControllerBase
             Status = string.IsNullOrWhiteSpace(body.Status) ? "Pending" : body.Status.Trim(),
             OrderDate = body.OrderDate == default ? DateOnly.FromDateTime(DateTime.UtcNow) : body.OrderDate,
             Notes = Truncate(body.Notes, 500),
-            DiscountAmount = 0,
-            DeliveryFee = 0,
+            DiscountAmount = body.DiscountAmount ?? 0,
+            DeliveryFee = body.DeliveryFee ?? 0,
             CreatedAtUtc = DateTime.UtcNow
         };
 
@@ -143,8 +143,8 @@ public class AdminOrdersController : ControllerBase
         }
         else
         {
-            order.SubTotal = 0;
-            order.Total = 0;
+            order.SubTotal = body.SubTotal ?? 0;
+            order.Total = body.Total ?? (order.SubTotal - order.DiscountAmount + order.DeliveryFee);
         }
 
         _db.Orders.Add(order);

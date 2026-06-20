@@ -2,6 +2,7 @@ namespace Single_Vendor.Web.Models.Api;
 
 public sealed class StorePromoAdResponse
 {
+    public int StorePromoAdId { get; set; }
     public int SlotIndex { get; set; }
     public string TitleLine { get; set; } = "";
     public string BigText { get; set; } = "";
@@ -9,6 +10,8 @@ public sealed class StorePromoAdResponse
     public string? LinkUrl { get; set; }
     public string? ImageUrl { get; set; }
     public bool IsActive { get; set; }
+    public bool ShowOnLanding { get; set; }
+    public int? LandingPosition { get; set; }
 }
 
 public sealed class StorePromoAdSlotUpdateDto
@@ -20,6 +23,8 @@ public sealed class StorePromoAdSlotUpdateDto
     public string? LinkUrl { get; set; }
     public string? ImageUrl { get; set; }
     public bool? IsActive { get; set; }
+    public bool? ShowOnLanding { get; set; }
+    public int? LandingPosition { get; set; }
 }
 
 public sealed class StorePromoAdsBulkUpdateRequest

@@ -120,12 +120,10 @@ const SettingsPage = () => {
                 linkUrl: s.linkUrl || "",
                 imageUrl: s.imageUrl || "",
                 isActive: s.isActive !== false,
+                showOnLanding: !!s.showOnLanding,
+                landingPosition: s.landingPosition ?? null,
               }))
-            : [
-                { slotIndex: 1, titleLine: "", bigText: "", subLine: "", linkUrl: "", imageUrl: "", isActive: true },
-                { slotIndex: 2, titleLine: "", bigText: "", subLine: "", linkUrl: "", imageUrl: "", isActive: true },
-                { slotIndex: 3, titleLine: "", bigText: "", subLine: "", linkUrl: "", imageUrl: "", isActive: true },
-              ]
+            : [{ slotIndex: 1, titleLine: "", bigText: "", subLine: "", linkUrl: "", imageUrl: "", isActive: true, showOnLanding: true, landingPosition: 1 }]
         );
       } else {
         setPromoSlots([]);
@@ -181,10 +179,78 @@ const SettingsPage = () => {
     setPromoSlots((rows) => rows.map((r) => (r.slotIndex === slotIndex ? { ...r, [field]: value } : r)));
   };
 
+  const addPromoSlot = () => {
+    setPromoSlots((rows) => {
+      const nextSlot = rows.reduce((m, r) => Math.max(m, Number(r.slotIndex) || 0), 0) + 1;
+      return [
+        ...rows,
+        {
+          slotIndex: nextSlot,
+          titleLine: "",
+          bigText: "",
+          subLine: "",
+          linkUrl: "",
+          imageUrl: "",
+          isActive: true,
+          showOnLanding: false,
+          landingPosition: null,
+        },
+      ];
+    });
+  };
+
+  const removePromoSlot = (slotIndex) => {
+    setPromoSlots((rows) => rows.filter((r) => r.slotIndex !== slotIndex));
+  };
+
+  const setShowOnLanding = (slotIndex, checked) => {
+    setPromoSlots((rows) => {
+      if (!checked) {
+        return rows.map((r) =>
+          r.slotIndex === slotIndex ? { ...r, showOnLanding: false, landingPosition: null } : r
+        );
+      }
+      const used = new Set(
+        rows
+          .filter((r) => r.slotIndex !== slotIndex && r.showOnLanding && r.isActive && r.landingPosition)
+          .map((r) => Number(r.landingPosition))
+      );
+      const selectedCount = rows.filter((r) => r.slotIndex !== slotIndex && r.showOnLanding && r.isActive).length;
+      if (selectedCount >= 3) {
+        setPromoMsg("You can show maximum 3 promo cards on landing.");
+        return rows;
+      }
+      const availablePos = [1, 2, 3].find((p) => !used.has(p)) || 1;
+      return rows.map((r) =>
+        r.slotIndex === slotIndex
+          ? { ...r, isActive: true, showOnLanding: true, landingPosition: Number(r.landingPosition) || availablePos }
+          : r
+      );
+    });
+  };
+
+  const setLandingPosition = (slotIndex, value) => {
+    const pos = Number(value) || null;
+    if (!pos) return;
+    setPromoSlots((rows) =>
+      rows.map((r) => {
+        if (r.slotIndex === slotIndex) return { ...r, isActive: true, showOnLanding: true, landingPosition: pos };
+        if (r.showOnLanding && Number(r.landingPosition) === pos) return { ...r, showOnLanding: false, landingPosition: null };
+        return r;
+      })
+    );
+  };
+
   const handleSavePromoAds = async () => {
     setPromoMsg("");
     setPromoSaving(true);
     try {
+      const landing = promoSlots.filter((s) => s.isActive && s.showOnLanding);
+      if (landing.length > 3) {
+        setPromoMsg("Only 3 promos can be shown on landing.");
+        setPromoSaving(false);
+        return;
+      }
       await adminApi("/api/admin/store/promo-ads", {
         method: "PUT",
         json: {
@@ -196,10 +262,13 @@ const SettingsPage = () => {
             linkUrl: s.linkUrl?.trim() || null,
             imageUrl: s.imageUrl?.trim() || null,
             isActive: !!s.isActive,
+            showOnLanding: !!s.showOnLanding,
+            landingPosition: s.showOnLanding ? Number(s.landingPosition) || 1 : null,
           })),
         },
       });
-      setPromoMsg("Landing promo ads saved.");
+      await load();
+      setPromoMsg("Promo ads saved.");
     } catch (e) {
       setPromoMsg(e.message || "Could not save promo ads.");
     } finally {
@@ -450,9 +519,8 @@ const SettingsPage = () => {
             <h3>Landing promo ads</h3>
           </div>
           <p className="empty-text" style={{ marginBottom: 16 }}>
-            Three deal cards on the storefront home (when <strong>Promo / sale spotlight</strong> is enabled). Upload an
-            image for each card below. Optional link URL must start with <code>http://</code> or <code>https://</code> to
-            be clickable on the site.
+            Add as many promos as you want. Choose up to <strong>3</strong> active promos for landing page and set their
+            order (1-3). Other active promos appear in the Deals page only.
           </p>
           {promoMsg && (
             <p className={promoMsg.includes("saved") ? "empty-text" : "settings-banner-error"} style={{ marginBottom: 12 }}>
@@ -462,7 +530,7 @@ const SettingsPage = () => {
           <div className="promo-slots-editor">
             {promoSlots.map((slot) => (
               <div key={slot.slotIndex} className="promo-slot-card">
-                <h4 className="promo-slot-title">Card {slot.slotIndex}</h4>
+                <h4 className="promo-slot-title">Promo #{slot.slotIndex}</h4>
                 <label className="promo-slot-check">
                   <input
                     type="checkbox"
@@ -471,6 +539,27 @@ const SettingsPage = () => {
                   />
                   <span>Active on storefront</span>
                 </label>
+                <label className="promo-slot-check">
+                  <input
+                    type="checkbox"
+                    checked={!!slot.showOnLanding}
+                    disabled={!slot.isActive}
+                    onChange={(e) => setShowOnLanding(slot.slotIndex, e.target.checked)}
+                  />
+                  <span>Show on landing</span>
+                </label>
+                <div className="input-group">
+                  <select
+                    value={slot.landingPosition || ""}
+                    onChange={(e) => setLandingPosition(slot.slotIndex, e.target.value)}
+                    disabled={!slot.showOnLanding || !slot.isActive}
+                  >
+                    <option value="">Landing order</option>
+                    <option value="1">Position 1</option>
+                    <option value="2">Position 2</option>
+                    <option value="3">Position 3</option>
+                  </select>
+                </div>
                 <div className="input-group" style={{ marginTop: 8 }}>
                   <input
                     type="text"
@@ -534,9 +623,17 @@ const SettingsPage = () => {
                     onChange={(e) => updatePromoField(slot.slotIndex, "linkUrl", e.target.value)}
                   />
                 </div>
+                <div className="promo-slot-actions">
+                  <button type="button" className="promo-slot-btn promo-slot-btn-danger" onClick={() => removePromoSlot(slot.slotIndex)}>
+                    Delete promo
+                  </button>
+                </div>
               </div>
             ))}
           </div>
+          <button type="button" className="promo-slot-btn" style={{ marginTop: 12 }} onClick={addPromoSlot} disabled={promoSaving || loading}>
+            Add new promo card
+          </button>
           <button type="button" className="save-btn" style={{ marginTop: 16 }} onClick={handleSavePromoAds} disabled={promoSaving || loading}>
             <FaSave className="save-icon" /> {promoSaving ? "Saving promos…" : "Save promo ads"}
           </button>
@@ -553,31 +650,36 @@ const SettingsPage = () => {
           </p>
           <div className="social-list">
             {[
-              ["primaryColorHex", "Primary"],
-              ["secondaryColorHex", "Secondary"],
-              ["accentColorHex", "Accent"],
-              ["bodyBackgroundHex", "Page background"],
-              ["headerBackgroundHex", "Header"],
-              ["footerBackgroundHex", "Footer"],
-              ["buttonColorHex", "Buttons"],
-              ["linkColorHex", "Links"],
-            ].map(([key, label]) => (
+              ["primaryColorHex", "Primary", "Main brand color. Used in big titles and important text."],
+              ["secondaryColorHex", "Secondary", "Second brand color. Used in small highlights and support UI parts."],
+              ["accentColorHex", "Accent", "Attention color. Used for hover effects and promo emphasis."],
+              ["bodyBackgroundHex", "Page background", "Background color of the whole storefront page."],
+              ["headerBackgroundHex", "Header", "Background color of the top header area."],
+              ["footerBackgroundHex", "Footer", "Background color of the footer area."],
+              ["buttonColorHex", "Buttons", "Main button color (for example: Add to cart, Shop now)."],
+              ["linkColorHex", "Links", "Color of clickable text links."],
+            ].map(([key, label, usage]) => (
               <div className="color-row" key={key}>
-                <label className="color-row-label">{label}</label>
-                <input
-                  type="color"
-                  className="color-picker"
-                  value={hexForPicker(theme[key])}
-                  onChange={(e) => setTheme({ ...theme, [key]: e.target.value })}
-                  aria-label={`${label} color`}
-                />
-                <input
-                  type="text"
-                  className="color-hex-input"
-                  placeholder="#rrggbb or empty"
-                  value={theme[key] || ""}
-                  onChange={(e) => setTheme({ ...theme, [key]: e.target.value })}
-                />
+                <div className="color-row-meta">
+                  <label className="color-row-label">{label}</label>
+                  <p className="color-row-usage">{usage}</p>
+                </div>
+                <div className="color-row-inputs">
+                  <input
+                    type="color"
+                    className="color-picker"
+                    value={hexForPicker(theme[key])}
+                    onChange={(e) => setTheme({ ...theme, [key]: e.target.value })}
+                    aria-label={`${label} color`}
+                  />
+                  <input
+                    type="text"
+                    className="color-hex-input"
+                    placeholder="#rrggbb or empty"
+                    value={theme[key] || ""}
+                    onChange={(e) => setTheme({ ...theme, [key]: e.target.value })}
+                  />
+                </div>
               </div>
             ))}
           </div>

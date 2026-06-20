@@ -34,6 +34,4 @@ public partial class Store
     public virtual StoreFeatureFlag? StoreFeatureFlag { get; set; }
 
     public virtual StoreSetting? StoreSetting { get; set; }
-
-    public virtual ICollection<StorePromoAd> StorePromoAds { get; set; } = new List<StorePromoAd>();
 }

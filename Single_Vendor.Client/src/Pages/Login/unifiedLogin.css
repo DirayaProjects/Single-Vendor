@@ -1,5 +1,8 @@
 .unified-login-card {
   max-width: 440px;
+  border: 1px solid #e6eaf5;
+  box-shadow: 0 18px 45px rgba(15, 35, 80, 0.16);
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
 }
 
 .unified-login-tabs {
@@ -10,18 +13,22 @@
 
 .unified-login-tabs button {
   flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: #f5f5f8;
+  padding: 11px;
+  border: 1px solid #d6deef;
+  border-radius: 10px;
+  background: #f6f8fd;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 600;
+  color: #35405f;
+  transition: all 0.18s ease;
 }
 
 .unified-login-tabs button.active {
-  background: #161f55;
+  background: linear-gradient(135deg, #0f2f70 0%, #1a56c7 100%);
   color: #fff;
-  border-color: #161f55;
+  border-color: #1c4ea8;
+  box-shadow: 0 8px 18px rgba(26, 86, 199, 0.3);
 }
 
 .unified-optional {
@@ -34,6 +41,7 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  position: relative;
 }
 
 .unified-password-row input {
@@ -41,12 +49,12 @@
 }
 
 .unified-eye {
-  border: 1px solid #ccc;
+  border: 1px solid #d2d9ea;
   border-radius: 8px;
   padding: 10px 12px;
-  background: #fff;
+  background: #f8faff;
   cursor: pointer;
-  color: #333;
+  color: #314163;
 }
 
 .unified-google-btn {
@@ -57,30 +65,18 @@
   width: 100%;
   margin-top: 4px;
   padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: #fff;
+  border: 1px solid #d4ddf0;
+  border-radius: 10px;
+  background: #ffffff;
   font-size: 15px;
+  font-weight: 600;
+  color: #1e2f54;
   cursor: pointer;
+  transition: all 0.18s ease;
 }
 
 .unified-google-btn:hover {
-  background: #fafafa;
-}
-
-.unified-open-shop-panel {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid #e7e7ee;
-}
-
-.unified-open-shop-panel h3 {
-  margin: 0 0 6px;
-  font-size: 16px;
-}
-
-.unified-open-shop-panel p {
-  margin: 0 0 10px;
-  color: #666;
-  font-size: 13px;
+  transform: translateY(-1px);
+  background: #f8faff;
+  border-color: #bcc9e6;
 }

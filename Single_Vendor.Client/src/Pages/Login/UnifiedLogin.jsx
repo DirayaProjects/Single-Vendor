@@ -5,7 +5,6 @@ import { getApiBase } from "../../services/apiConfig";
 import { setUserToken, clearUserToken } from "../../services/userAuth";
 import { setAdminToken, clearAdminToken } from "../../services/adminAuth";
 import { setSuperAdminToken, clearSuperAdminToken } from "../../services/superAdminAuth";
-import { fetchStoreSuggestions } from "../../services/storefrontApi";
 import "../Admin/Login/adminLogin.css";
 import "./unifiedLogin.css";
 
@@ -17,8 +16,6 @@ const UnifiedLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [storeHint, setStoreHint] = useState("");
-  const [openShopText, setOpenShopText] = useState("");
-  const [storeSuggestions, setStoreSuggestions] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -26,31 +23,8 @@ const UnifiedLogin = () => {
     const q = searchParams.get("storeSlug")?.trim();
     if (q) {
       setStoreHint(q);
-      setOpenShopText(q);
     }
   }, [searchParams]);
-
-  useEffect(() => {
-    let cancelled = false;
-    const lookup = async () => {
-      const q = openShopText.trim();
-      if (q.length < 2) {
-        setStoreSuggestions([]);
-        return;
-      }
-      try {
-        const rows = await fetchStoreSuggestions(q);
-        if (!cancelled) setStoreSuggestions(Array.isArray(rows) ? rows : []);
-      } catch {
-        if (!cancelled) setStoreSuggestions([]);
-      }
-    };
-    const id = setTimeout(lookup, 250);
-    return () => {
-      cancelled = true;
-      clearTimeout(id);
-    };
-  }, [openShopText]);
 
   const storeSlugForRequest = () => searchParams.get("storeSlug")?.trim() || storeHint.trim() || "";
 
@@ -185,8 +159,8 @@ const UnifiedLogin = () => {
       <div className="admin-login-card unified-login-card">
         <h1>{isSignup ? "Create account" : "Sign in"}</h1>
         <p className="admin-login-hint">
-          One sign-in for <strong>Super Admin</strong>, <strong>Store Admin</strong>, and <strong>customers</strong>.
-          You can sign in/create an account without store info, then open any shop below.
+          Access your account with a secure, unified sign-in for <strong>Super Admin</strong>,{" "}
+          <strong>Store Admin</strong>, and <strong>customers</strong>.
         </p>
 
         <div className="unified-login-tabs">
@@ -246,48 +220,8 @@ const UnifiedLogin = () => {
             <FaGoogle /> {isSignup ? "Sign up with Google" : "Continue with Google"}
           </button>
         </form>
-        <div className="unified-open-shop-panel">
-          <h3>Open a shop without logging in</h3>
-          <p>Enter a shop name or slug and continue as guest.</p>
-          <label>
-            Shop name or slug <span className="unified-optional">(optional suggestions)</span>
-            <input
-              type="text"
-              autoComplete="off"
-              list="store-suggestions"
-              placeholder="e.g. batta"
-              value={openShopText}
-              onChange={(e) => {
-                setOpenShopText(e.target.value);
-                setStoreHint(e.target.value);
-              }}
-            />
-          </label>
-          <datalist id="store-suggestions">
-            {storeSuggestions.map((s) => (
-              <option
-                key={s.publicSlug}
-                value={s.publicSlug}
-                label={s.displayName ? `${s.displayName} (${s.publicSlug})` : s.publicSlug}
-              />
-            ))}
-          </datalist>
-          <button
-            type="button"
-            onClick={() => {
-              const slug = openShopText.trim();
-              if (!slug) {
-                setError("Enter a shop name or slug to open a storefront.");
-                return;
-              }
-              navigate(`/?storeSlug=${encodeURIComponent(slug)}`);
-            }}
-          >
-            Open shop
-          </button>
-        </div>
-        <Link to="/portal" className="admin-login-back">
-          ← Store portal
+        <Link to="/" className="admin-login-back">
+          ← Back to storefront
         </Link>
       </div>
     </div>

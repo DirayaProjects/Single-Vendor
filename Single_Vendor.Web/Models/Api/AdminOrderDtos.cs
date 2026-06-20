@@ -21,6 +21,10 @@ public sealed class OrderCreateRequest
     public string Status { get; set; } = "Pending";
     public DateOnly OrderDate { get; set; }
     public string? Notes { get; set; }
+    public decimal? SubTotal { get; set; }
+    public decimal? DiscountAmount { get; set; }
+    public decimal? DeliveryFee { get; set; }
+    public decimal? Total { get; set; }
     public IReadOnlyList<OrderItemCreateRequest>? Items { get; set; }
 }
 

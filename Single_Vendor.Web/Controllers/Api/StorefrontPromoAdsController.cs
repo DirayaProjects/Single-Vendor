@@ -20,6 +20,7 @@ public class StorefrontPromoAdsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<StorePromoAdResponse>>> List(
         [FromQuery] string? storeSlug,
+        [FromQuery] string? scope,
         CancellationToken cancellationToken)
     {
         var slug = StoreSlugHelper.NormalizeOrNull(storeSlug);
@@ -36,18 +37,30 @@ public class StorefrontPromoAdsController : ControllerBase
         if (!StoreFeaturePolicies.PromoAdsSectionEnabled(flags))
             return Ok(Array.Empty<StorePromoAdResponse>());
 
-        var rows = await _db.StorePromoAds.AsNoTracking()
-            .Where(a => a.StoreId == store.StoreId && a.IsActive)
-            .OrderBy(a => a.SlotIndex)
+        var scopeValue = string.IsNullOrWhiteSpace(scope) ? "landing" : scope.Trim().ToLowerInvariant();
+        var q = _db.StorePromoAds.AsNoTracking().Where(a => a.StoreId == store.StoreId && a.IsActive);
+        q = scopeValue switch
+        {
+            "deals" => q.Where(a => !a.ShowOnLanding),
+            "all" => q,
+            _ => q.Where(a => a.ShowOnLanding),
+        };
+
+        var rows = await q
+            .OrderBy(a => a.ShowOnLanding ? (a.LandingPosition ?? 99) : 99)
+            .ThenBy(a => a.SlotIndex)
             .Select(a => new StorePromoAdResponse
             {
+                StorePromoAdId = a.StorePromoAdId,
                 SlotIndex = a.SlotIndex,
                 TitleLine = a.TitleLine,
                 BigText = a.BigText,
                 SubLine = a.SubLine,
                 LinkUrl = a.LinkUrl,
                 ImageUrl = a.ImageUrl,
-                IsActive = a.IsActive
+                IsActive = a.IsActive,
+                ShowOnLanding = a.ShowOnLanding,
+                LandingPosition = a.LandingPosition
             })
             .ToListAsync(cancellationToken);
 

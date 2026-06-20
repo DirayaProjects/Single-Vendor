@@ -69,7 +69,7 @@ const AllProducts = () => {
           return;
         }
         const [ads, cats] = await Promise.all([
-          fetchStorefrontPromoAds(apiSlug),
+          fetchStorefrontPromoAds(apiSlug, "all"),
           fetchStorefrontCategories(apiSlug),
         ]);
         const withContent = (Array.isArray(ads) ? ads : []).filter(promoAdHasContent);
@@ -189,10 +189,11 @@ const AllProducts = () => {
 
   const showFilters = !isDealsView && !isWishlistView;
   const selectedCategory = categories.find((c) => String(c.categoryId) === String(categoryIdFromUrl));
-  const categoryHero = selectedCategory?.imageUrl ? resolveResponsiveMedia(selectedCategory.imageUrl) : null;
+  const selectedCategoryImage = selectedCategory?.imageUrl || selectedCategory?.image || "";
+  const categoryHero = selectedCategoryImage ? resolveResponsiveMedia(selectedCategoryImage) : null;
   const storeBanner = settings?.bannerUrl ? resolveResponsiveMedia(settings.bannerUrl) : null;
   const useCategoryHero = !!categoryIdFromUrl && !isDealsView && !isWishlistView && viewFromUrl !== "new";
-  const productsBanner = useCategoryHero ? (categoryHero || storeBanner) : storeBanner;
+  const productsBanner = useCategoryHero ? categoryHero : storeBanner;
   const heroSrc = productsBanner?.src
     ? productsBanner.src.replace(/-md\.webp($|\?)/i, "-sm.webp$1")
     : "";

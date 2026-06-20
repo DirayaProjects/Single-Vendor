@@ -191,3 +191,15 @@ body {
   color: var(--gray-text);
   margin: 0 0 12px;
 }
+
+.order-financial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 760px) {
+  .order-financial-grid {
+    grid-template-columns: 1fr;
+  }
+}

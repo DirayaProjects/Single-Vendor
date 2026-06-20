@@ -66,9 +66,9 @@ export async function fetchStorefrontReviews(storeSlug, take = 40) {
   return getJson(buildUrl("/api/storefront/reviews", { storeSlug, take: String(take) }));
 }
 
-/** Landing promo / ad cards (empty if feature off or none active). */
-export async function fetchStorefrontPromoAds(storeSlug) {
-  return getJson(buildUrl("/api/storefront/promo-ads", { storeSlug }));
+/** Storefront promo cards by scope: landing (default), deals, or all. */
+export async function fetchStorefrontPromoAds(storeSlug, scope = "landing") {
+  return getJson(buildUrl("/api/storefront/promo-ads", { storeSlug, scope }));
 }
 
 /** Public reviews for one product (product detail). */

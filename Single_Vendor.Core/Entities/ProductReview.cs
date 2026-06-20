@@ -9,9 +9,6 @@ public partial class ProductReview
 
     public int ProductId { get; set; }
 
-    /// <summary>Denormalized from <see cref="Product.StoreId"/> (see SQL script 10).</summary>
-    public int? StoreId { get; set; }
-
     public string? UserId { get; set; }
 
     public byte Rating { get; set; }
@@ -20,9 +17,9 @@ public partial class ProductReview
 
     public DateTime CreatedAtUtc { get; set; }
 
-    public virtual Product Product { get; set; } = null!;
+    public int? StoreId { get; set; }
 
-    public virtual Store? Store { get; set; }
+    public virtual Product Product { get; set; } = null!;
 
     public virtual AspNetUser? User { get; set; }
 }

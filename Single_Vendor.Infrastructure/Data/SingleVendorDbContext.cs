@@ -55,9 +55,9 @@ public partial class SingleVendorDbContext : DbContext
 
     public virtual DbSet<StoreFeatureFlag> StoreFeatureFlags { get; set; }
 
-    public virtual DbSet<StoreSetting> StoreSettings { get; set; }
-
     public virtual DbSet<StorePromoAd> StorePromoAds { get; set; }
+
+    public virtual DbSet<StoreSetting> StoreSettings { get; set; }
 
     public virtual DbSet<WishlistItem> WishlistItems { get; set; }
 
@@ -326,11 +326,6 @@ public partial class SingleVendorDbContext : DbContext
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("FK_Reviews_Products");
 
-            entity.HasOne(d => d.Store).WithMany()
-                .HasForeignKey(d => d.StoreId)
-                .IsRequired(false)
-                .HasConstraintName("FK_ProductReviews_Stores");
-
             entity.HasOne(d => d.User).WithMany(p => p.ProductReviews)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_Reviews_AspNetUsers");
@@ -407,21 +402,25 @@ public partial class SingleVendorDbContext : DbContext
 
         modelBuilder.Entity<StorePromoAd>(entity =>
         {
-            entity.HasKey(e => e.StorePromoAdId).HasName("PK_StorePromoAds");
+            entity.HasKey(e => e.StorePromoAdId).HasName("PK__StorePro__1806EBBA31E8E94D");
 
-            entity.HasIndex(e => new { e.StoreId, e.SlotIndex }, "UX_StorePromoAds_Store_Slot").IsUnique();
             entity.HasIndex(e => e.StoreId, "IX_StorePromoAds_StoreId");
 
-            entity.Property(e => e.TitleLine).HasMaxLength(120);
-            entity.Property(e => e.BigText).HasMaxLength(50);
-            entity.Property(e => e.SubLine).HasMaxLength(120);
-            entity.Property(e => e.LinkUrl).HasMaxLength(1000);
-            entity.Property(e => e.ImageUrl).HasMaxLength(1000);
+            entity.HasIndex(e => new { e.StoreId, e.IsActive, e.SlotIndex }, "IX_StorePromoAds_Store_IsActive_Slot");
 
-            entity.HasOne(d => d.Store).WithMany(p => p.StorePromoAds)
-                .HasForeignKey(d => d.StoreId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_StorePromoAds_Stores");
+            entity.HasIndex(e => new { e.StoreId, e.LandingPosition }, "UX_StorePromoAds_Store_LandingPosition")
+                .IsUnique()
+                .HasFilter("([ShowOnLanding]=(1) AND [LandingPosition] IS NOT NULL)");
+
+            entity.HasIndex(e => new { e.StoreId, e.SlotIndex }, "UX_StorePromoAds_Store_Slot").IsUnique();
+
+            entity.Property(e => e.BigText).HasMaxLength(50);
+            entity.Property(e => e.ImageUrl).HasMaxLength(1000);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.LinkUrl).HasMaxLength(1000);
+            entity.Property(e => e.ShowOnLanding).HasDefaultValue(true);
+            entity.Property(e => e.SubLine).HasMaxLength(120);
+            entity.Property(e => e.TitleLine).HasMaxLength(120);
         });
 
         modelBuilder.Entity<StoreSetting>(entity =>

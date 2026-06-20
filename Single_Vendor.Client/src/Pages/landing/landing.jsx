@@ -130,7 +130,7 @@ const LandingPage = () => {
       </section>
 
       {showPromoRow && (
-        <section className="promos">
+        <section className={`promos promos-count-${Math.min(welcomePromos.length, 3)}`}>
           {welcomePromos.map((ad) => {
             const img = ad.imageUrl ? resolveResponsiveMedia(ad.imageUrl) : null;
             const body = (

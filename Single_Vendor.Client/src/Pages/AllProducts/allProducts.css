@@ -65,6 +65,20 @@
   max-width: 80px;
 }
 
+.all-products-page .products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 280px));
+  justify-content: center;
+  gap: 24px;
+  padding: 20px 40px;
+}
+
+.all-products-page .product-card,
+.all-products-page .promo-deal-card-link {
+  width: 100%;
+  max-width: 280px;
+}
+
 /* .products {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -307,6 +321,7 @@
   .products {
     grid-template-columns: 1fr;
     padding: 20px;
+    justify-items: center;
   }
 
   .filters select,

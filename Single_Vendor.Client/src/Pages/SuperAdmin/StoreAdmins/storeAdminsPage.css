@@ -211,6 +211,23 @@
   background: #fafbff;
 }
 
+.store-admins-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 34, 61, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 16px;
+}
+
+.store-admins-modal {
+  width: min(920px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+}
+
 .store-admins-edit-box h3 {
   margin: 0 0 12px;
   color: #1a237e;

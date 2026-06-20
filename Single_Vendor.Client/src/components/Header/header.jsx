@@ -13,6 +13,8 @@ import { useStorefrontSettings } from "../../contexts/StorefrontSettingsContext"
 import { promoAdHasContent } from "../../utils/promoAds";
 import { resolveMediaUrl, resolveResponsiveMedia } from "../../utils/mediaUrl";
 
+const LANG_STORAGE_KEY = "single_vendor_lang";
+
 function readEmailFromJwt(token) {
   if (!token) return "";
   try {
@@ -41,7 +43,14 @@ const Header = () => {
   const hasAdminSession = !!getAdminToken();
   const hasCustomerSession = !!getUserToken();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [language, setLanguage] = useState("Eng");
+  const [language, setLanguage] = useState(() => {
+    try {
+      const saved = localStorage.getItem(LANG_STORAGE_KEY);
+      return saved === "Ar" ? "Ar" : "Eng";
+    } catch {
+      return "Eng";
+    }
+  });
   const [categories, setCategories] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [showAuth, setShowAuth] = useState(false);
@@ -105,6 +114,18 @@ const Header = () => {
   }, [slugFromUrl, apiSlug, features.promoAdsSection]);
 
   useEffect(() => {
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, language);
+    } catch {
+      // ignore storage restrictions
+    }
+    document.documentElement.lang = language === "Ar" ? "ar" : "en";
+    document.documentElement.dir = language === "Ar" ? "rtl" : "ltr";
+    document.body?.setAttribute("dir", language === "Ar" ? "rtl" : "ltr");
+    window.dispatchEvent(new CustomEvent("singleVendor:languageChanged", { detail: { language } }));
+  }, [language]);
+
+  useEffect(() => {
     const onOpenAuth = (e) => {
       const mode = e.detail?.mode === "signup" ? "signup" : "login";
       setAuthMode(mode);
@@ -164,6 +185,36 @@ const Header = () => {
     goProductsView("wishlist");
   };
 
+  const t = language === "Ar"
+    ? {
+        home: "الرئيسية",
+        categories: "الفئات",
+        deals: "العروض",
+        whatsNew: "الجديد",
+        login: "تسجيل الدخول",
+        signup: "إنشاء حساب",
+        myAccount: "حسابي",
+        admin: "الإدارة",
+        superAdmin: "سوبر أدمن",
+        searchPlaceholder: "ابحث عن المنتجات…",
+        languageEng: "الإنجليزية",
+        languageAr: "العربية",
+      }
+    : {
+        home: "Home",
+        categories: "Categories",
+        deals: "Deals",
+        whatsNew: "What’s new",
+        login: "Login",
+        signup: "Sign Up",
+        myAccount: "My account",
+        admin: "Admin",
+        superAdmin: "SuperAdmin",
+        searchPlaceholder: "Search products…",
+        languageEng: "Eng",
+        languageAr: "Ar",
+      };
+
   return (
     <>
       <header className="navbar">
@@ -184,10 +235,10 @@ const Header = () => {
 
           <div className={`nav-links ${menuOpen ? "active" : ""}`}>
             <Link to={homeTo} className="nav-link">
-              Home
+              {t.home}
             </Link>
             <select className="dropdown-select" value={selectedCategoryId} onChange={handleCategoryChange}>
-              <option value="">Categories</option>
+              <option value="">{t.categories}</option>
               {categories.map((c) => (
                 <option key={c.categoryId} value={String(c.categoryId)}>
                   {c.name}
@@ -197,12 +248,12 @@ const Header = () => {
 
             {showDealsNav && (
               <button type="button" className="nav-link nav-link-btn" onClick={() => goProductsView("deals")}>
-                Deals
+                {t.deals}
               </button>
             )}
             {showNewNav && (
               <button type="button" className="nav-link nav-link-btn" onClick={() => goProductsView("new")}>
-                What’s new
+                {t.whatsNew}
               </button>
             )}
           </div>
@@ -212,7 +263,7 @@ const Header = () => {
           <form className="search-container" onSubmit={handleSearchSubmit}>
             <input
               type="text"
-              placeholder="Search products…"
+              placeholder={t.searchPlaceholder}
               className="search-input"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -226,33 +277,33 @@ const Header = () => {
         <div className="navbar-right">
           {hasSuperAdminSession && (
             <Link to="/superadmin/dashboard" className="nav-btn">
-              SuperAdmin
+              {t.superAdmin}
             </Link>
           )}
           {hasAdminSession && (
             <Link to="/admin/dashboard" className="nav-btn">
-              Admin
+              {t.admin}
             </Link>
           )}
           {hasCustomerSession && !hasAdminSession && (
             <Link to={{ pathname: "/account", search }} className="nav-btn">
-              My account
+              {t.myAccount}
             </Link>
           )}
           {!hasSuperAdminSession && !hasAdminSession && !hasCustomerSession && (
             <>
               <button type="button" className="nav-btn" onClick={() => openAuthModal("login")}>
-                Login
+                {t.login}
               </button>
               <button type="button" className="nav-btn sign" onClick={() => openAuthModal("signup")}>
-                Sign Up
+                {t.signup}
               </button>
             </>
           )}
 
           <select className="dropdown-select" value={language} onChange={(e) => setLanguage(e.target.value)}>
-            <option value="Eng">Eng</option>
-            <option value="Ar">Ar</option>
+            <option value="Eng">{t.languageEng}</option>
+            <option value="Ar">{t.languageAr}</option>
           </select>
 
           {features.storefrontCartCheckout && (

@@ -280,56 +280,6 @@ const StoreAdminsPage = () => {
                   </td>
                 </tr>
               ))}
-              {editingId && (
-                <tr>
-                  <td colSpan={6}>
-                    <div className="store-admins-edit-box">
-                      <h3>Edit store admin</h3>
-                      <div className="store-admins-edit-grid">
-                        <label>
-                          Public store slug
-                          <input type="text" value={editSlug} onChange={(e) => setEditSlug(e.target.value)} />
-                        </label>
-                        <label>
-                          Store display name
-                          <input type="text" value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)} />
-                        </label>
-                      </div>
-                      <fieldset className="store-admins-features">
-                        <legend>Features</legend>
-                        <div className="store-admins-features-grid">
-                          {featureFields.map(({ key, label }) => (
-                            <label key={`edit-${key}`} className="store-admins-feature-row">
-                              <input
-                                type="checkbox"
-                                checked={!!editFeatures[key]}
-                                onChange={() => setEditFeatures((f) => ({ ...f, [key]: !f[key] }))}
-                              />
-                              <span>{label}</span>
-                            </label>
-                          ))}
-                        </div>
-                        <div className="store-admins-features-actions">
-                          <button type="button" onClick={() => setAllEditFeatures(true)}>
-                            Select all
-                          </button>
-                          <button type="button" onClick={() => setAllEditFeatures(false)}>
-                            Clear all
-                          </button>
-                        </div>
-                      </fieldset>
-                      <div className="store-admins-edit-actions">
-                        <button type="button" onClick={saveEdit} disabled={savingEdit}>
-                          {savingEdit ? "Saving…" : "Save changes"}
-                        </button>
-                        <button type="button" onClick={cancelEdit} disabled={savingEdit}>
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
               {!loading && admins.length === 0 && (
                 <tr>
                   <td colSpan={6} style={{ padding: "24px", textAlign: "center", color: "#666" }}>
@@ -340,6 +290,62 @@ const StoreAdminsPage = () => {
             </tbody>
           </table>
         </div>
+        {editingId && (
+          <div className="store-admins-modal-backdrop" role="presentation" onClick={cancelEdit}>
+            <div
+              className="store-admins-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="store-admins-edit-title"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="store-admins-edit-box">
+                <h3 id="store-admins-edit-title">Edit store admin</h3>
+                <div className="store-admins-edit-grid">
+                  <label>
+                    Public store slug
+                    <input type="text" value={editSlug} onChange={(e) => setEditSlug(e.target.value)} />
+                  </label>
+                  <label>
+                    Store display name
+                    <input type="text" value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)} />
+                  </label>
+                </div>
+                <fieldset className="store-admins-features">
+                  <legend>Features</legend>
+                  <div className="store-admins-features-grid">
+                    {featureFields.map(({ key, label }) => (
+                      <label key={`edit-${key}`} className="store-admins-feature-row">
+                        <input
+                          type="checkbox"
+                          checked={!!editFeatures[key]}
+                          onChange={() => setEditFeatures((f) => ({ ...f, [key]: !f[key] }))}
+                        />
+                        <span>{label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <div className="store-admins-features-actions">
+                    <button type="button" onClick={() => setAllEditFeatures(true)}>
+                      Select all
+                    </button>
+                    <button type="button" onClick={() => setAllEditFeatures(false)}>
+                      Clear all
+                    </button>
+                  </div>
+                </fieldset>
+                <div className="store-admins-edit-actions">
+                  <button type="button" onClick={saveEdit} disabled={savingEdit}>
+                    {savingEdit ? "Saving…" : "Save changes"}
+                  </button>
+                  <button type="button" onClick={cancelEdit} disabled={savingEdit}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

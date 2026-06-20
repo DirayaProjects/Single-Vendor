@@ -40,16 +40,21 @@ public class AdminStorePromoAdsController : ControllerBase
 
         var rows = await _db.StorePromoAds.AsNoTracking()
             .Where(a => a.StoreId == storeId.Value)
-            .OrderBy(a => a.SlotIndex)
+            .OrderByDescending(a => a.ShowOnLanding)
+            .ThenBy(a => a.LandingPosition ?? 99)
+            .ThenBy(a => a.SlotIndex)
             .Select(a => new StorePromoAdResponse
             {
+                StorePromoAdId = a.StorePromoAdId,
                 SlotIndex = a.SlotIndex,
                 TitleLine = a.TitleLine,
                 BigText = a.BigText,
                 SubLine = a.SubLine,
                 LinkUrl = a.LinkUrl,
                 ImageUrl = a.ImageUrl,
-                IsActive = a.IsActive
+                IsActive = a.IsActive,
+                ShowOnLanding = a.ShowOnLanding,
+                LandingPosition = a.LandingPosition
             })
             .ToListAsync(cancellationToken);
 
@@ -69,62 +74,114 @@ public class AdminStorePromoAdsController : ControllerBase
 
         await EnsureSlotsAsync(storeId.Value, cancellationToken);
 
-        if (body.Slots is not { Count: > 0 })
+        if (body.Slots is null)
             return BadRequest("Slots array is required.");
+        if (body.Slots.Count == 0)
+            return BadRequest("Provide at least one promo row.");
 
         foreach (var dto in body.Slots)
         {
-            if (dto.SlotIndex is < 1 or > 3)
-                return BadRequest("Each slotIndex must be 1, 2, or 3.");
+            if (dto.SlotIndex < 1)
+                return BadRequest("Each slotIndex must be >= 1.");
+            if (dto.SlotIndex > byte.MaxValue)
+                return BadRequest($"slotIndex cannot be greater than {byte.MaxValue}.");
         }
 
-        if (body.Slots.Select(s => s.SlotIndex).Distinct().Count() != 3)
-            return BadRequest("Provide exactly three slots with distinct slotIndex values 1–3.");
+        if (body.Slots.Select(s => s.SlotIndex).Distinct().Count() != body.Slots.Count)
+            return BadRequest("slotIndex values must be distinct.");
+
+        var requestedLanding = body.Slots
+            .Where(s => (s.ShowOnLanding ?? false) && (s.IsActive ?? true))
+            .ToList();
+        if (requestedLanding.Count > 3)
+            return BadRequest("At most 3 promos can be marked for landing.");
+        var requestedLandingPositions = requestedLanding
+            .Where(s => s.LandingPosition is >= 1 and <= 3)
+            .Select(s => s.LandingPosition!.Value)
+            .ToList();
+        if (requestedLandingPositions.Count != requestedLanding.Select(s => s.LandingPosition).Count())
+            return BadRequest("Landing promos must have landingPosition 1, 2, or 3.");
+        if (requestedLandingPositions.Distinct().Count() != requestedLandingPositions.Count)
+            return BadRequest("Landing positions must be unique (1..3).");
 
         var bySlot = body.Slots.ToDictionary(s => s.SlotIndex, s => s);
 
         var entities = await _db.StorePromoAds
             .Where(a => a.StoreId == storeId.Value)
             .ToListAsync(cancellationToken);
+        var existingBySlot = entities.ToDictionary(e => (int)e.SlotIndex, e => e);
 
-        foreach (var entity in entities)
+        foreach (var dto in body.Slots)
         {
-            if (!bySlot.TryGetValue(entity.SlotIndex, out var dto))
-                continue;
+            var active = dto.IsActive ?? true;
+            var showOnLanding = active && (dto.ShowOnLanding ?? false);
+            byte? landingPosition = null;
+            if (showOnLanding && dto.LandingPosition is >= 1 and <= 3)
+                landingPosition = (byte)dto.LandingPosition.Value;
 
-            entity.TitleLine = Truncate(dto.TitleLine, entity.TitleLine, 120);
-            entity.BigText = Truncate(dto.BigText, entity.BigText, 50);
-            entity.SubLine = Truncate(dto.SubLine, entity.SubLine, 120);
-            entity.LinkUrl = TruncateNullable(dto.LinkUrl, 1000);
-            entity.ImageUrl = TruncateNullable(dto.ImageUrl, 1000);
-            if (dto.IsActive.HasValue)
-                entity.IsActive = dto.IsActive.Value;
-            entity.UpdatedAtUtc = DateTime.UtcNow;
+            if (existingBySlot.TryGetValue(dto.SlotIndex, out var entity))
+            {
+                entity.TitleLine = NormalizeNonNull(dto.TitleLine, 120);
+                entity.BigText = NormalizeNonNull(dto.BigText, 50);
+                entity.SubLine = NormalizeNonNull(dto.SubLine, 120);
+                entity.LinkUrl = TruncateNullable(dto.LinkUrl, 1000);
+                entity.ImageUrl = TruncateNullable(dto.ImageUrl, 1000);
+                entity.IsActive = active;
+                entity.ShowOnLanding = showOnLanding;
+                entity.LandingPosition = landingPosition;
+                entity.UpdatedAtUtc = DateTime.UtcNow;
+                continue;
+            }
+
+            _db.StorePromoAds.Add(new StorePromoAd
+            {
+                StoreId = storeId.Value,
+                SlotIndex = checked((byte)dto.SlotIndex),
+                TitleLine = NormalizeNonNull(dto.TitleLine, 120),
+                BigText = NormalizeNonNull(dto.BigText, 50),
+                SubLine = NormalizeNonNull(dto.SubLine, 120),
+                LinkUrl = TruncateNullable(dto.LinkUrl, 1000),
+                ImageUrl = TruncateNullable(dto.ImageUrl, 1000),
+                IsActive = active,
+                ShowOnLanding = showOnLanding,
+                LandingPosition = landingPosition,
+                UpdatedAtUtc = DateTime.UtcNow
+            });
         }
+
+        var incomingSlotSet = bySlot.Keys.ToHashSet();
+        var toDelete = entities.Where(e => !incomingSlotSet.Contains(e.SlotIndex)).ToList();
+        if (toDelete.Count > 0)
+            _db.StorePromoAds.RemoveRange(toDelete);
 
         await _db.SaveChangesAsync(cancellationToken);
 
         var rows = await _db.StorePromoAds.AsNoTracking()
             .Where(a => a.StoreId == storeId.Value)
-            .OrderBy(a => a.SlotIndex)
+            .OrderByDescending(a => a.ShowOnLanding)
+            .ThenBy(a => a.LandingPosition ?? 99)
+            .ThenBy(a => a.SlotIndex)
             .Select(a => new StorePromoAdResponse
             {
+                StorePromoAdId = a.StorePromoAdId,
                 SlotIndex = a.SlotIndex,
                 TitleLine = a.TitleLine,
                 BigText = a.BigText,
                 SubLine = a.SubLine,
                 LinkUrl = a.LinkUrl,
                 ImageUrl = a.ImageUrl,
-                IsActive = a.IsActive
+                IsActive = a.IsActive,
+                ShowOnLanding = a.ShowOnLanding,
+                LandingPosition = a.LandingPosition
             })
             .ToListAsync(cancellationToken);
 
         return Ok(rows);
     }
 
-    private static string Truncate(string? incoming, string fallback, int max)
+    private static string NormalizeNonNull(string? incoming, int max)
     {
-        var v = string.IsNullOrWhiteSpace(incoming) ? fallback : incoming.Trim();
+        var v = string.IsNullOrWhiteSpace(incoming) ? "" : incoming.Trim();
         return v.Length <= max ? v : v[..max];
     }
 
@@ -142,14 +199,14 @@ public class AdminStorePromoAdsController : ControllerBase
     {
         var existing = await _db.StorePromoAds
             .Where(a => a.StoreId == storeId)
-            .Select(a => a.SlotIndex)
+            .Select(a => a.StorePromoAdId)
             .ToListAsync(cancellationToken);
+        if (existing.Count > 0)
+            return;
 
         var now = DateTime.UtcNow;
         for (byte slot = 1; slot <= 3; slot++)
         {
-            if (existing.Contains(slot))
-                continue;
             _db.StorePromoAds.Add(new StorePromoAd
             {
                 StoreId = storeId,
@@ -158,6 +215,8 @@ public class AdminStorePromoAdsController : ControllerBase
                 BigText = "50%",
                 SubLine = "OFF",
                 IsActive = true,
+                ShowOnLanding = true,
+                LandingPosition = slot,
                 UpdatedAtUtc = now
             });
         }

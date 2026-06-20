@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -68,6 +69,11 @@ const Orders = () => {
     date: dayjs(),
     description: "",
   });
+  const amountAdornment = (
+    <InputAdornment position="start">
+      <span>$</span>
+    </InputAdornment>
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -257,6 +263,10 @@ const Orders = () => {
           status: formData.status,
           orderDate: dayjs(formData.date).format("YYYY-MM-DD"),
           notes: formData.description?.trim() || null,
+          subTotal: Number(formData.subTotal) || 0,
+          discountAmount: Number(formData.discountAmount) || 0,
+          deliveryFee: Number(formData.deliveryFee) || 0,
+          total: Number(formData.total) || 0,
           items: null,
         },
       });
@@ -513,6 +523,18 @@ const Orders = () => {
                 fullWidth
                 margin="dense"
               />
+              <Typography variant="subtitle2" sx={{ color: "#22345a", mt: 0.5 }}>
+                Amount details
+              </Typography>
+              <TextField
+                label="Order amount"
+                type="number"
+                value={formData.total}
+                onChange={(e) => setFormData({ ...formData, total: e.target.value })}
+                fullWidth
+                margin="dense"
+                InputProps={{ startAdornment: amountAdornment }}
+              />
               <TextField
                 select
                 label="Status"
@@ -526,6 +548,35 @@ const Orders = () => {
                 <MenuItem value="Shipped">Shipped</MenuItem>
                 <MenuItem value="Cancelled">Cancelled</MenuItem>
               </TextField>
+              <div className="order-financial-grid">
+                <TextField
+                  label="Subtotal"
+                  type="number"
+                  value={formData.subTotal}
+                  onChange={(e) => setFormData({ ...formData, subTotal: e.target.value })}
+                  fullWidth
+                  margin="dense"
+                  InputProps={{ startAdornment: amountAdornment }}
+                />
+                <TextField
+                  label="Discount"
+                  type="number"
+                  value={formData.discountAmount}
+                  onChange={(e) => setFormData({ ...formData, discountAmount: e.target.value })}
+                  fullWidth
+                  margin="dense"
+                  InputProps={{ startAdornment: amountAdornment }}
+                />
+                <TextField
+                  label="Delivery fee"
+                  type="number"
+                  value={formData.deliveryFee}
+                  onChange={(e) => setFormData({ ...formData, deliveryFee: e.target.value })}
+                  fullWidth
+                  margin="dense"
+                  InputProps={{ startAdornment: amountAdornment }}
+                />
+              </div>
               <DatePicker
                 label="Order date"
                 value={formData.date}
@@ -595,6 +646,7 @@ const Orders = () => {
                 onChange={(e) => setFormData({ ...formData, subTotal: e.target.value })}
                 fullWidth
                 margin="dense"
+                InputProps={{ startAdornment: amountAdornment }}
               />
               <TextField
                 label="Discount"
@@ -603,6 +655,7 @@ const Orders = () => {
                 onChange={(e) => setFormData({ ...formData, discountAmount: e.target.value })}
                 fullWidth
                 margin="dense"
+                InputProps={{ startAdornment: amountAdornment }}
               />
               <TextField
                 label="Delivery fee"
@@ -611,6 +664,7 @@ const Orders = () => {
                 onChange={(e) => setFormData({ ...formData, deliveryFee: e.target.value })}
                 fullWidth
                 margin="dense"
+                InputProps={{ startAdornment: amountAdornment }}
               />
               <TextField
                 label="Total"
@@ -619,6 +673,7 @@ const Orders = () => {
                 onChange={(e) => setFormData({ ...formData, total: e.target.value })}
                 fullWidth
                 margin="dense"
+                InputProps={{ startAdornment: amountAdornment }}
               />
               <TextField
                 label="Notes"

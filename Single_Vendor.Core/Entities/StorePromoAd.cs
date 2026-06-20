@@ -1,6 +1,8 @@
+﻿using System;
+using System.Collections.Generic;
+
 namespace Single_Vendor.Core.Entities;
 
-/// <summary>Landing promo / ad card for a store (slots 1–3).</summary>
 public partial class StorePromoAd
 {
     public int StorePromoAdId { get; set; }
@@ -21,7 +23,9 @@ public partial class StorePromoAd
 
     public bool IsActive { get; set; }
 
-    public DateTime? UpdatedAtUtc { get; set; }
+    public DateTime UpdatedAtUtc { get; set; }
 
-    public virtual Store Store { get; set; } = null!;
+    public bool ShowOnLanding { get; set; }
+
+    public byte? LandingPosition { get; set; }
 }
