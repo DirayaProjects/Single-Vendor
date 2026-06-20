@@ -192,11 +192,15 @@ const AllProducts = () => {
   const selectedCategoryImage = selectedCategory?.imageUrl || selectedCategory?.image || "";
   const categoryHero = selectedCategoryImage ? resolveResponsiveMedia(selectedCategoryImage) : null;
   const storeBanner = settings?.bannerUrl ? resolveResponsiveMedia(settings.bannerUrl) : null;
-  const useCategoryHero = !!categoryIdFromUrl && !isDealsView && !isWishlistView && viewFromUrl !== "new";
+  const useCategoryHero =
+    !!categoryIdFromUrl && !!selectedCategoryImage && !isWishlistView && viewFromUrl !== "new";
   const productsBanner = useCategoryHero ? categoryHero : storeBanner;
   const heroSrc = productsBanner?.src
     ? productsBanner.src.replace(/-md\.webp($|\?)/i, "-sm.webp$1")
     : "";
+  const heroImageKey = useCategoryHero
+    ? `cat-${categoryIdFromUrl}-${selectedCategoryImage}`
+    : `store-${settings?.bannerUrl || "default"}`;
 
   return (
     <div className="all-products-page">
@@ -223,6 +227,7 @@ const AllProducts = () => {
         <div className={`hero-image-product ${productsBanner ? "hero-image-product-has-banner" : ""}`}>
           {productsBanner ? (
             <img
+              key={heroImageKey}
               src={heroSrc || productsBanner.src}
               srcSet={productsBanner.srcSet || undefined}
               sizes="(max-width: 768px) 100vw, 360px"
@@ -230,6 +235,12 @@ const AllProducts = () => {
               className="hero-banner-img"
               loading="eager"
               fetchPriority="high"
+              onError={(e) => {
+                if (heroSrc && e.currentTarget.src !== productsBanner.src) {
+                  e.currentTarget.src = productsBanner.src;
+                  e.currentTarget.removeAttribute("srcset");
+                }
+              }}
             />
           ) : null}
         </div>

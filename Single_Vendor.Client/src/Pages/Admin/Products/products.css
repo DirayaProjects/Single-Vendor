@@ -412,7 +412,7 @@
   font-size: 13px;
 }
 
-.modal-form input,
+.modal-form input:not([type="checkbox"]),
 .modal-form select,
 .modal-form textarea {
   width: 100%;
@@ -439,6 +439,15 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.attr-toggle-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .attr-values-row {

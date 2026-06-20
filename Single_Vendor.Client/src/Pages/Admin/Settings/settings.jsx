@@ -64,7 +64,6 @@ const SettingsPage = () => {
 
   const [promoSlots, setPromoSlots] = useState([]);
   const [promoMsg, setPromoMsg] = useState("");
-  const [promoSaving, setPromoSaving] = useState(false);
 
   const [theme, setTheme] = useState({
     primaryColorHex: "",
@@ -241,49 +240,46 @@ const SettingsPage = () => {
     );
   };
 
-  const handleSavePromoAds = async () => {
-    setPromoMsg("");
-    setPromoSaving(true);
-    try {
-      const landing = promoSlots.filter((s) => s.isActive && s.showOnLanding);
-      if (landing.length > 3) {
-        setPromoMsg("Only 3 promos can be shown on landing.");
-        setPromoSaving(false);
-        return;
-      }
-      await adminApi("/api/admin/store/promo-ads", {
-        method: "PUT",
-        json: {
-          slots: promoSlots.map((s) => ({
-            slotIndex: s.slotIndex,
-            titleLine: s.titleLine || null,
-            bigText: s.bigText || null,
-            subLine: s.subLine || null,
-            linkUrl: s.linkUrl?.trim() || null,
-            imageUrl: s.imageUrl?.trim() || null,
-            isActive: !!s.isActive,
-            showOnLanding: !!s.showOnLanding,
-            landingPosition: s.showOnLanding ? Number(s.landingPosition) || 1 : null,
-          })),
-        },
-      });
-      await load();
-      setPromoMsg("Promo ads saved.");
-    } catch (e) {
-      setPromoMsg(e.message || "Could not save promo ads.");
-    } finally {
-      setPromoSaving(false);
+  const buildPromoPayload = () => ({
+    slots: promoSlots.map((s) => ({
+      slotIndex: s.slotIndex,
+      titleLine: s.titleLine || null,
+      bigText: s.bigText || null,
+      subLine: s.subLine || null,
+      linkUrl: s.linkUrl?.trim() || null,
+      imageUrl: s.imageUrl?.trim() || null,
+      isActive: !!s.isActive,
+      showOnLanding: !!s.showOnLanding,
+      landingPosition: s.showOnLanding ? Number(s.landingPosition) || 1 : null,
+    })),
+  });
+
+  const validatePromoSlots = () => {
+    const landing = promoSlots.filter((s) => s.isActive && s.showOnLanding);
+    if (landing.length > 3) {
+      return "Only 3 promos can be shown on landing.";
     }
+    return "";
   };
 
   const handleSave = async () => {
     setError("");
+    setPromoMsg("");
     setSaving(true);
     try {
       if (logoPreview?.startsWith?.("blob:") || bannerPreview?.startsWith?.("blob:")) {
         setError("Wait for image upload to finish, or choose a file again.");
         setSaving(false);
         return;
+      }
+
+      if (promoEnabled) {
+        const promoError = validatePromoSlots();
+        if (promoError) {
+          setPromoMsg(promoError);
+          setSaving(false);
+          return;
+        }
       }
 
       const logoUrl = logoPreview || null;
@@ -310,6 +306,14 @@ const SettingsPage = () => {
           linkColorHex: theme.linkColorHex || null,
         },
       });
+
+      if (promoEnabled) {
+        await adminApi("/api/admin/store/promo-ads", {
+          method: "PUT",
+          json: buildPromoPayload(),
+        });
+      }
+
       await load();
       alert("Saved.");
     } catch (e) {
@@ -520,10 +524,11 @@ const SettingsPage = () => {
           </div>
           <p className="empty-text" style={{ marginBottom: 16 }}>
             Add as many promos as you want. Choose up to <strong>3</strong> active promos for landing page and set their
-            order (1-3). Other active promos appear in the Deals page only.
+            order (1-3). Other active promos appear in the Deals page only. Promo ads are saved together with{" "}
+            <strong>Save Changes</strong> at the bottom of this page.
           </p>
           {promoMsg && (
-            <p className={promoMsg.includes("saved") ? "empty-text" : "settings-banner-error"} style={{ marginBottom: 12 }}>
+            <p className="settings-banner-error" style={{ marginBottom: 12 }}>
               {promoMsg}
             </p>
           )}
@@ -601,7 +606,7 @@ const SettingsPage = () => {
                   <input
                     type="file"
                     accept="image/*"
-                    disabled={!!uploadingPromoSlot || promoSaving || loading}
+                    disabled={!!uploadingPromoSlot || saving || loading}
                     onChange={(e) => handlePromoImageFile(e, slot.slotIndex)}
                   />
                   {uploadingPromoSlot === slot.slotIndex && <p className="empty-text">Uploading…</p>}
@@ -631,11 +636,8 @@ const SettingsPage = () => {
               </div>
             ))}
           </div>
-          <button type="button" className="promo-slot-btn" style={{ marginTop: 12 }} onClick={addPromoSlot} disabled={promoSaving || loading}>
+          <button type="button" className="promo-slot-btn" style={{ marginTop: 12 }} onClick={addPromoSlot} disabled={saving || loading}>
             Add new promo card
-          </button>
-          <button type="button" className="save-btn" style={{ marginTop: 16 }} onClick={handleSavePromoAds} disabled={promoSaving || loading}>
-            <FaSave className="save-icon" /> {promoSaving ? "Saving promos…" : "Save promo ads"}
           </button>
         </div>) : null}
 

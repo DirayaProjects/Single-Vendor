@@ -16,6 +16,31 @@ const emptyFeatures = {
   adminAttributes: false,
 };
 
+/** Parent/child feature pairs stay in sync when toggled. */
+function applyFeatureToggle(prev, key) {
+  const next = { ...prev, [key]: !prev[key] };
+
+  if (key === "adminOrders") {
+    next.storefrontCartCheckout = !!next.adminOrders;
+  }
+  if (key === "storefrontCartCheckout") {
+    if (next.storefrontCartCheckout) {
+      next.adminOrders = true;
+    } else {
+      next.adminOrders = false;
+    }
+  }
+
+  if (key === "productRatingStars") {
+    next.customerProductReviews = !!next.productRatingStars;
+  }
+  if (key === "customerProductReviews" && !next.customerProductReviews) {
+    next.productRatingStars = false;
+  }
+
+  return next;
+}
+
 const featureFields = [
   { key: "productRatingStars", label: "Product rating stars (storefront)" },
   { key: "customerProductReviews", label: "Customer reviews & ratings (submit + APIs)" },
@@ -211,7 +236,7 @@ const StoreAdminsPage = () => {
                     <input
                       type="checkbox"
                       checked={!!features[key]}
-                      onChange={() => setFeatures((f) => ({ ...f, [key]: !f[key] }))}
+                      onChange={() => setFeatures((f) => applyFeatureToggle(f, key))}
                     />
                     <span>{label}</span>
                   </label>
@@ -319,7 +344,7 @@ const StoreAdminsPage = () => {
                         <input
                           type="checkbox"
                           checked={!!editFeatures[key]}
-                          onChange={() => setEditFeatures((f) => ({ ...f, [key]: !f[key] }))}
+                          onChange={() => setEditFeatures((f) => applyFeatureToggle(f, key))}
                         />
                         <span>{label}</span>
                       </label>
