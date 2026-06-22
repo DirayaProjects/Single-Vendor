@@ -1,16 +1,40 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./AuthModal.css";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 
 const AuthModal = ({ onClose, mode = "login" }) => {
   const [isSignup, setIsSignup] = useState(mode === "signup");
   const [showPassword, setShowPassword] = useState(false);
+  const [userInput, setUserInput] = useState(""); // can be email or username
+  const [passwordInput, setPasswordInput] = useState("");
+
+  const navigate = useNavigate();
+
+  // admin credentials
+  const AdminEmail = "Mariam@gmail.com";
+  const AdminUsername = "Mariam";
+  const AdminPassword = "Maryam123";
 
   const toggleMode = () => setIsSignup(!isSignup);
   const togglePassword = () => setShowPassword(!showPassword);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!isSignup) {
+      if (
+        (userInput === AdminEmail || userInput === AdminUsername) &&
+        passwordInput === AdminPassword
+      ) {
+        navigate("/admin"); 
+        return;
+      } else {
+        alert("Invalid email/username or password");
+        return;
+      }
+    }
+
     console.log(isSignup ? "Signing up..." : "Logging in...");
   };
 
@@ -43,10 +67,12 @@ const AuthModal = ({ onClose, mode = "login" }) => {
           )}
 
           <input
-            type="email"
-            placeholder="Email"
+            type="text"
+            placeholder={isSignup ? "Email" : "Email or Username"}
             className="auth-input"
             required
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
           />
 
           <div className="password-wrapper">
@@ -55,6 +81,8 @@ const AuthModal = ({ onClose, mode = "login" }) => {
               placeholder="Password"
               className="auth-input"
               required
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
             />
             <span className="password-toggle" onClick={togglePassword}>
               {showPassword ? <FaEyeSlash /> : <FaEye />}
