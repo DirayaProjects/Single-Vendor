@@ -1,0 +1,82 @@
+.unified-login-card {
+  max-width: 440px;
+  border: 1px solid #e6eaf5;
+  box-shadow: 0 18px 45px rgba(15, 35, 80, 0.16);
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+}
+
+.unified-login-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.unified-login-tabs button {
+  flex: 1;
+  padding: 11px;
+  border: 1px solid #d6deef;
+  border-radius: 10px;
+  background: #f6f8fd;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #35405f;
+  transition: all 0.18s ease;
+}
+
+.unified-login-tabs button.active {
+  background: linear-gradient(135deg, #0f2f70 0%, #1a56c7 100%);
+  color: #fff;
+  border-color: #1c4ea8;
+  box-shadow: 0 8px 18px rgba(26, 86, 199, 0.3);
+}
+
+.unified-optional {
+  font-weight: normal;
+  color: #777;
+  font-size: 12px;
+}
+
+.unified-password-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  position: relative;
+}
+
+.unified-password-row input {
+  flex: 1;
+}
+
+.unified-eye {
+  border: 1px solid #d2d9ea;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #f8faff;
+  cursor: pointer;
+  color: #314163;
+}
+
+.unified-google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 4px;
+  padding: 10px 12px;
+  border: 1px solid #d4ddf0;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e2f54;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.unified-google-btn:hover {
+  transform: translateY(-1px);
+  background: #f8faff;
+  border-color: #bcc9e6;
+}

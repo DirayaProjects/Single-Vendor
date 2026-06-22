@@ -1,0 +1,48 @@
+/* Storefront theme (overridden when ?storeSlug=… loads settings — see StorefrontThemeSync) */
+:root {
+  --store-primary: #102542;
+  --store-header-bg: #0f223d;
+  --store-body-bg: #f9f9f9;
+  --store-footer-bg: #0f223d;
+  --store-button: #0f223d;
+  --store-accent: #ff6b6b;
+  --store-secondary: #303030;
+  --store-link: #5f9ea0;
+}
+
+.primary-color{
+  color: var(--store-primary, #102542);
+}
+  
+.bg-primary{
+  background-color: #ffff;
+}
+  
+.white{
+  color: white;
+}
+
+.bg-secondary{
+    background-color: #303030;
+}
+.card-color{
+    background-color:#212121 ;
+}
+
+.btn-text{
+  color: #353535;
+}
+
+.bg-invisible{
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.red{
+  color: rgba(255, 0, 0, 0.679);
+}
+
+.white-op-80{
+  color: #ffffffcc;
+}
+
+

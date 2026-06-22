@@ -1,0 +1,103 @@
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { clearAdminToken } from "../../services/adminAuth";
+import "./sidebar.css";
+import {
+  FaTachometerAlt,
+  FaShoppingCart,
+  FaBoxOpen,
+  FaTags,
+  FaCogs,
+  FaSignOutAlt,
+  FaBars,
+  FaTools
+} from "react-icons/fa";
+import { useAdminStore } from "../../contexts/AdminStoreContext";
+
+const Sidebar = ({ onToggle }) => {
+  const { features } = useAdminStore();
+  const [isOpen, setIsOpen] = useState(true);
+  const navigate = useNavigate();
+
+  const toggleSidebar = () => setIsOpen(!isOpen);
+
+  const handleLogout = () => {
+    clearAdminToken();
+    navigate("/login");
+  };
+
+  useEffect(() => {
+    if (onToggle) onToggle(isOpen);
+  }, [isOpen, onToggle]);
+
+  return (
+    <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
+      <div className="top-section">
+        {isOpen && <h1 className="logo">Admin</h1>}
+        <div className="toggle-btn" onClick={toggleSidebar}>
+          <FaBars />
+        </div>
+      </div>
+
+      <ul className="menu">
+
+        <li>
+          <NavLink to="/admin/dashboard" className="nav-item">
+            <FaTachometerAlt className="icon" />
+            {isOpen && <span>Dashboard</span>}
+          </NavLink>
+        </li>
+
+        {features.adminOrders && (
+        <li>
+          <NavLink to="/admin/orders" className="nav-item">
+            <FaShoppingCart className="icon" />
+            {isOpen && <span>Orders</span>}
+          </NavLink>
+        </li>
+        )}
+
+        <li>
+          <NavLink to="/admin/products" className="nav-item">
+            <FaBoxOpen className="icon" />
+            {isOpen && <span>Products</span>}
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/admin/categories" className="nav-item">
+            <FaTags className="icon" />
+            {isOpen && <span>Categories</span>}
+          </NavLink>
+        </li>
+
+        {features.adminAttributes && (
+        <li>
+          <NavLink to="/admin/attributes" className="nav-item">
+            <FaCogs className="icon" />
+            {isOpen && <span>Attributes</span>}
+          </NavLink>
+        </li>
+        )}
+
+        {/* NEW SETTINGS TAB */}
+        <li>
+          <NavLink to="/admin/settings" className="nav-item">
+            <FaTools className="icon" />
+            {isOpen && <span>Settings</span>}
+          </NavLink>
+        </li>
+
+        <li onClick={handleLogout}>
+          <div className="nav-item logout">
+            <FaSignOutAlt className="icon" />
+            {isOpen && <span>Logout</span>}
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  );
+};
+
+export default Sidebar;

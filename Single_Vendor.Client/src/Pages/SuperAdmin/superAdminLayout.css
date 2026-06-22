@@ -1,0 +1,20 @@
+.superadmin-content {
+  margin-left: 220px;
+  padding: 30px;
+  transition: margin-left 0.3s;
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+  background: #f7f8fb;
+  box-sizing: border-box;
+}
+
+.superadmin-content.sidebar-closed {
+  margin-left: 60px;
+}
+
+@media screen and (max-width: 768px) {
+  .superadmin-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+}

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Single_Vendor.Client</RootNamespace>
+    <DefaultItemExcludes>$(DefaultItemExcludes);node_modules\**;build\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <!-- Makes src/ and public/ visible under the project in Visual Studio -->
+  <ItemGroup>
+    <None Include="package.json" />
+    <None Include="package-lock.json" />
+    <None Include="README.md" />
+    <None Include=".gitignore" />
+    <None Include="public\**\*" />
+    <None Include="src\**\*" />
+  </ItemGroup>
+
+</Project>

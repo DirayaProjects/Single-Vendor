@@ -1,0 +1,114 @@
+/* Same structure as admin sidebar; distinct indigo theme for SuperAdmin */
+.superadmin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 220px;
+  background: linear-gradient(180deg, #1a237e 0%, #0d1642 100%);
+  color: #fff;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.superadmin-sidebar.closed {
+  width: 60px;
+}
+
+.superadmin-sidebar .top-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.superadmin-sidebar .logo-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #ffd54f;
+  margin-top: 4px;
+}
+
+.superadmin-sidebar .toggle-btn {
+  cursor: pointer;
+  font-size: 20px;
+  color: #fff;
+}
+
+.superadmin-sidebar .menu {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.superadmin-sidebar .menu li {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.superadmin-sidebar .nav-item {
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 15px 20px;
+  transition: background 0.25s ease, padding-left 0.25s ease;
+}
+
+.superadmin-sidebar .nav-item .icon {
+  font-size: 28px;
+  margin-right: 15px;
+}
+
+.superadmin-sidebar.closed .nav-item {
+  justify-content: center;
+}
+
+.superadmin-sidebar.closed .nav-item .icon {
+  margin-right: 0;
+}
+
+.superadmin-sidebar.closed .nav-item span {
+  display: none;
+}
+
+.superadmin-sidebar .menu li:hover .nav-item {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  padding-left: 10px;
+}
+
+.superadmin-sidebar .nav-item.active {
+  background-color: rgba(255, 255, 255, 0.18);
+  border-left: 4px solid #ffd54f;
+  padding-left: 12px;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.superadmin-sidebar .menu li .logout {
+  color: #fff;
+}
+
+.superadmin-sidebar .menu li:hover .logout {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  padding-left: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .superadmin-sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+  .superadmin-sidebar.closed {
+    width: 100%;
+  }
+}
