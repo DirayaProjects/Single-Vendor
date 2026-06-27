@@ -1,0 +1,68 @@
+# =========================
+# .NET / Visual Studio
+# =========================
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Ll]og/
+[Ll]ogs/
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+
+# User secrets / local config
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# =========================
+# Node / React (Client)
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp
+.pnp.js
+
+EcommerceWeb.Client/build/
+EcommerceWeb.Client/coverage/
+
+# =========================
+# SPA output + uploads (generated at build/run)
+# =========================
+EcommerceWeb.Web/wwwroot/static/
+EcommerceWeb.Web/wwwroot/uploads/
+EcommerceWeb.Web/wwwroot/asset-manifest.json
+EcommerceWeb.Web/wwwroot/index.html
+EcommerceWeb.Web/wwwroot/favicon.ico
+EcommerceWeb.Web/wwwroot/manifest.json
+EcommerceWeb.Web/wwwroot/robots.txt
+EcommerceWeb.Web/wwwroot/logo*.png
+
+# =========================
+# OS / IDE
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+*.swp
+*.swo
