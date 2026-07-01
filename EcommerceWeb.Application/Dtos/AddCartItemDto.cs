@@ -7,4 +7,6 @@ public class AddCartItemDto
     public int ProductId { get; set; }
 
     public int Quantity { get; set; } = 1;
+
+    public Dictionary<string, string> SelectedAttributes { get; set; } = [];
 }

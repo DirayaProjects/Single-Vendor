@@ -17,4 +17,6 @@ public class SaveSettingsDto
     public string? Twitter { get; set; }
 
     public string? Tiktok { get; set; }
+
+    public FeatureSettingsDto Features { get; set; } = new();
 }

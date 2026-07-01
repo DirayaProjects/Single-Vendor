@@ -28,6 +28,12 @@ public static class DependencyInjection
         services.AddScoped<IStorefrontRepository, StorefrontRepository>();
         services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<IProductReviewRepository, ProductReviewRepository>();
+        services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+        services.AddScoped<IPromoAdRepository, PromoAdRepository>();
+        services.AddScoped<IDeliveryCityRepository, DeliveryCityRepository>();
+        services.AddScoped<ISpinWheelRepository, SpinWheelRepository>();
+        services.AddScoped<IGeneralDiscountRepository, GeneralDiscountRepository>();
+        services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         services.AddScoped<IImageStorageService, ImageStorageService>();
         services.AddSingleton<IPasswordVerifier, PasswordVerifier>();
 

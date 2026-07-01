@@ -526,6 +526,14 @@
   padding-left: 4px;
 }
 
+.attr-color-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+  padding-left: 4px;
+}
+
 .value-checkbox-label {
   font-weight: 400;
   font-size: 13px;

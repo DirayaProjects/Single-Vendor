@@ -10,6 +10,10 @@ import { useStoreSlug } from "../../hooks/useStoreSlug";
 import { useCart, useCustomerAuth } from "../../contexts/CartContext";
 import { getAuthSession } from "../../services/authApi";
 import { sizedImageUrl } from "../../services/uploadApi";
+import PriceDisplay from "../../components/PriceDisplay/PriceDisplay";
+import ProductAttributeSelector from "../../components/ProductAttributeSelector/ProductAttributeSelector";
+import { areAllAttributesSelected, productHasAttributes } from "../../utils/productAttributes";
+import { savePendingCartAdd } from "../../utils/pendingCartStorage";
 
 const Item = () => {
   const { id } = useParams();
@@ -21,6 +25,7 @@ const Item = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [selectedAttributes, setSelectedAttributes] = useState({});
   const [mainImage, setMainImage] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
@@ -30,7 +35,8 @@ const Item = () => {
 
   const loadProduct = async () => {
     const data = await fetchStorefrontProduct(slug, id);
-    setProduct(data);
+        setProduct(data);
+        setSelectedAttributes({});
     const first = sizedImageUrl(data.images?.[0], "medium") || data.images?.[0] || null;
     setMainImage(first);
   };
@@ -65,9 +71,20 @@ const Item = () => {
   }, [slug, id]);
 
   const handleAddToCart = async () => {
+    if (productHasAttributes(product.attributes) && !areAllAttributesSelected(product.attributes, selectedAttributes)) {
+      alert("Please choose all options before adding to cart.");
+      return;
+    }
+
     try {
-      const result = await addItem(Number(id), quantity);
+      const result = await addItem(Number(id), quantity, selectedAttributes);
       if (result?.needsLogin) {
+        savePendingCartAdd({
+          productId: Number(id),
+          quantity,
+          selectedAttributes,
+          product,
+        });
         setShowAuth(true);
       }
     } catch (err) {
@@ -115,7 +132,8 @@ const Item = () => {
   }
 
   const images = (product.images || []).map((url) => sizedImageUrl(url, "medium") || url);
-  const attributeEntries = Object.entries(product.attributes || {});
+  const hasAttributes = productHasAttributes(product.attributes);
+  const canAddToCart = !hasAttributes || areAllAttributesSelected(product.attributes, selectedAttributes);
 
   return (
     <div className="product-page">
@@ -145,7 +163,9 @@ const Item = () => {
 
           <div className="product-details">
             <h2>{product.name}</h2>
-            <p className="price">${Number(product.price).toFixed(2)}</p>
+            <p className="price">
+              <PriceDisplay price={product.price} salePrice={product.salePrice} effectivePrice={product.effectivePrice} />
+            </p>
             <p className="details">{product.details || "—"}</p>
             <div className="stars-row">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -160,14 +180,13 @@ const Item = () => {
             {product.brand && <p><strong>Brand:</strong> {product.brand}</p>}
             {product.category && <p><strong>Category:</strong> {product.category}</p>}
 
-            {attributeEntries.length > 0 && (
-              <div className="product-attr-list">
-                {attributeEntries.map(([name, values]) => (
-                  <p key={name}>
-                    <strong>{name}:</strong> {(Array.isArray(values) ? values : [values]).join(", ")}
-                  </p>
-                ))}
-              </div>
+            {hasAttributes && (
+              <ProductAttributeSelector
+                attributes={product.attributes}
+                selected={selectedAttributes}
+                onChange={setSelectedAttributes}
+                size="lg"
+              />
             )}
 
             <div className="quantity-control">
@@ -177,7 +196,9 @@ const Item = () => {
             </div>
 
             <div className="buttons">
-              <button type="button" className="add-cart" onClick={handleAddToCart}>Add to Cart</button>
+              <button type="button" className="add-cart" onClick={handleAddToCart} disabled={!canAddToCart}>
+                Add to Cart
+              </button>
             </div>
           </div>
         </div>
@@ -209,14 +230,22 @@ const Item = () => {
           {isCustomer ? (
             <form className="review-form" onSubmit={handleSubmitReview}>
               <h4>Write a review</h4>
-              <label>
-                Rating
-                <select value={reviewRating} onChange={(e) => setReviewRating(Number(e.target.value))}>
-                  {[5, 4, 3, 2, 1].map((r) => (
-                    <option key={r} value={r}>{r} stars</option>
+              <div className="review-rating-picker">
+                <span className="review-rating-label">Rating</span>
+                <div className="review-stars-input">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      className="review-star-btn"
+                      onClick={() => setReviewRating(star)}
+                      aria-label={`${star} star${star > 1 ? "s" : ""}`}
+                    >
+                      <FaStar className={star <= reviewRating ? "star-filled" : "star-empty"} />
+                    </button>
                   ))}
-                </select>
-              </label>
+                </div>
+              </div>
               <label>
                 Comment
                 <textarea

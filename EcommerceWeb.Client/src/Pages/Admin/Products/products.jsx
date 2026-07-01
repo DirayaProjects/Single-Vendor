@@ -173,6 +173,7 @@ export default function ProductsPage() {
     categoryId: prod.categoryId,
     brand: prod.brand,
     price: prod.price,
+    salePrice: prod.salePrice ?? null,
     quantity: prod.quantity,
     images: prod.images || [],
     attributes: prod.attributes || {},

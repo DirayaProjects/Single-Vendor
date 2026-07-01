@@ -19,6 +19,8 @@ public partial class OrderItem
 
     public decimal LineTotal { get; set; }
 
+    public decimal? OriginalUnitPrice { get; set; }
+
     public virtual Order Order { get; set; } = null!;
 
     public virtual Product Product { get; set; } = null!;

@@ -6,5 +6,7 @@ public class CartSummaryDto
 
     public decimal Subtotal { get; set; }
 
+    public decimal OriginalSubtotal { get; set; }
+
     public int ItemCount { get; set; }
 }

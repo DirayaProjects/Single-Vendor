@@ -1,6 +1,7 @@
 using EcommerceWeb.Application.Dtos;
 using EcommerceWeb.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceWeb.Web.Controllers.Api;
 
@@ -9,10 +10,12 @@ namespace EcommerceWeb.Web.Controllers.Api;
 public class CartController : ControllerBase
 {
     private readonly ICartService _cartService;
+    private readonly ILogger<CartController> _logger;
 
-    public CartController(ICartService cartService)
+    public CartController(ICartService cartService, ILogger<CartController> logger)
     {
         _cartService = cartService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -45,6 +48,16 @@ public class CartController : ControllerBase
         catch (InvalidOperationException ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Cart add failed for user {UserId} product {ProductId}", dto.UserId, dto.ProductId);
+            return StatusCode(500, new { message = "Could not save cart item. Restart the app after database updates, then try again." });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Cart add failed for user {UserId} product {ProductId}", dto.UserId, dto.ProductId);
+            return StatusCode(500, new { message = ex.Message });
         }
     }
 

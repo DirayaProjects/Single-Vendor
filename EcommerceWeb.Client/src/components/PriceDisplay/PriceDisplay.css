@@ -1,0 +1,16 @@
+.price-display.on-sale {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 0.9em;
+}
+
+.price-new {
+  color: #c0392b;
+  font-weight: 700;
+}

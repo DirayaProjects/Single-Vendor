@@ -18,6 +18,13 @@ public static class DependencyInjection
         services.AddScoped<IStorefrontService, StorefrontService>();
         services.AddScoped<ICartService, CartService>();
         services.AddScoped<IProductReviewService, ProductReviewService>();
+        services.AddScoped<IFavoriteService, FavoriteService>();
+        services.AddScoped<ICheckoutService, CheckoutService>();
+        services.AddScoped<ICustomerOrderService, CustomerOrderService>();
+        services.AddScoped<IPromoAdService, PromoAdService>();
+        services.AddScoped<IDeliveryCityService, DeliveryCityService>();
+        services.AddScoped<ISpinWheelService, SpinWheelService>();
+        services.AddScoped<IGeneralDiscountService, GeneralDiscountService>();
         return services;
     }
 }

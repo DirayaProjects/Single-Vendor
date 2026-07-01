@@ -1,0 +1,128 @@
+.my-orders-page {
+  background-color: #f5f7fc;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+  margin-top: 50px;
+}
+
+.my-orders-container {
+  width: 85%;
+  max-width: 900px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 40px;
+}
+
+.my-orders-container h2 {
+  color: #0b1e3d;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.empty-orders-text {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.orders-action-btn {
+  background: #0b1e3d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-card {
+  border: 1px solid #e8ecf4;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.order-header h4 {
+  margin: 0 0 4px;
+  color: #0b1e3d;
+}
+
+.order-date {
+  margin: 0;
+  color: #888;
+  font-size: 14px;
+}
+
+.order-status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  background: #eef2fb;
+  color: #0b1e3d;
+}
+
+.order-status.status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.order-status.status-completed,
+.order-status.status-delivered {
+  background: #d4edda;
+  color: #155724;
+}
+
+.order-items {
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 0;
+  margin-bottom: 12px;
+}
+
+.order-item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.order-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.order-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #666;
+}
+
+.order-total-row.total {
+  font-weight: 600;
+  color: #0b1e3d;
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.order-note {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: #888;
+  font-style: italic;
+}

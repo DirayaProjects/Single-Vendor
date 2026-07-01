@@ -35,6 +35,12 @@ public class SettingsService : ISettingsService
             InstagramUrl = dto.Instagram,
             TwitterUrl = dto.Twitter,
             TikTokUrl = dto.Tiktok,
+            SpinWheelEnabled = dto.Features.SpinWheelEnabled,
+            SpinWheelVisible = dto.Features.SpinWheelVisible,
+            FirstOrderDiscountEnabled = dto.Features.FirstOrderDiscountEnabled,
+            FirstOrderDiscountPercent = dto.Features.FirstOrderDiscountPercent,
+            FirstOrderDiscountAmount = dto.Features.FirstOrderDiscountAmount,
+            GeneralDiscountsEnabled = dto.Features.GeneralDiscountsEnabled,
             UpdatedAt = DateTime.UtcNow
         };
 
@@ -55,9 +61,20 @@ public class SettingsService : ISettingsService
             Instagram = settings.InstagramUrl,
             Twitter = settings.TwitterUrl,
             Tiktok = settings.TikTokUrl,
-            Slug = SlugHelper.FromSettings(settings)
+            Slug = SlugHelper.FromSettings(settings),
+            Features = MapFeatures(settings)
         };
     }
+
+    internal static FeatureSettingsDto MapFeatures(WebsiteSetting settings) => new()
+    {
+        SpinWheelEnabled = settings.SpinWheelEnabled,
+        SpinWheelVisible = settings.SpinWheelVisible,
+        FirstOrderDiscountEnabled = settings.FirstOrderDiscountEnabled,
+        FirstOrderDiscountPercent = settings.FirstOrderDiscountPercent,
+        FirstOrderDiscountAmount = settings.FirstOrderDiscountAmount,
+        GeneralDiscountsEnabled = settings.GeneralDiscountsEnabled
+    };
 
     private static string? NormalizeImageUrl(string? image)
     {

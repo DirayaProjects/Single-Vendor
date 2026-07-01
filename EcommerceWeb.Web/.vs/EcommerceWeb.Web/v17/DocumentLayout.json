@@ -3,10 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\user\\source\\repos\\EcommerceWeb\\EcommerceWeb.Web\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{164DDBCB-5B59-4861-AA7C-E95269468466}|..\\EcommerceWeb.Infrastructure\\EcommerceWeb.Infrastructure.csproj|c:\\users\\user\\source\\repos\\ecommerceweb\\ecommerceweb.infrastructure\\scaffoldscript.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{164DDBCB-5B59-4861-AA7C-E95269468466}|..\\EcommerceWeb.Infrastructure\\EcommerceWeb.Infrastructure.csproj|c:\\users\\user\\source\\repos\\ecommerceweb\\ecommerceweb.infrastructure\\data\\ecommercewebdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{164DDBCB-5B59-4861-AA7C-E95269468466}|..\\EcommerceWeb.Infrastructure\\EcommerceWeb.Infrastructure.csproj|c:\\users\\user\\source\\repos\\ecommerceweb\\ecommerceweb.infrastructure\\data\\ecommercewebdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{164DDBCB-5B59-4861-AA7C-E95269468466}|..\\EcommerceWeb.Infrastructure\\EcommerceWeb.Infrastructure.csproj|c:\\users\\user\\source\\repos\\ecommerceweb\\ecommerceweb.infrastructure\\scaffoldscript.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
@@ -65,7 +65,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -93,8 +93,7 @@
               "RelativeToolTip": "..\\EcommerceWeb.Infrastructure\\DependencyInjection.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-27T19:59:12.099Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-27T19:59:12.099Z"
             },
             {
               "$type": "Document",
@@ -106,8 +105,7 @@
               "RelativeToolTip": "..\\EcommerceWeb.Infrastructure\\Services\\PasswordVerifier.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-27T19:58:58.67Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-27T19:58:58.67Z"
             },
             {
               "$type": "Document",
@@ -119,31 +117,29 @@
               "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
               "ViewState": "AgIAALoTAAAAAAAAAAAwwMYTAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2026-06-27T18:41:49.112Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-27T18:41:49.112Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "ScaffoldScript.txt",
               "DocumentMoniker": "C:\\Users\\user\\source\\repos\\EcommerceWeb\\EcommerceWeb.Infrastructure\\ScaffoldScript.txt",
               "RelativeDocumentMoniker": "..\\EcommerceWeb.Infrastructure\\ScaffoldScript.txt",
               "ToolTip": "C:\\Users\\user\\source\\repos\\EcommerceWeb\\EcommerceWeb.Infrastructure\\ScaffoldScript.txt",
               "RelativeToolTip": "..\\EcommerceWeb.Infrastructure\\ScaffoldScript.txt",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAADYAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAADsAQAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2026-06-27T18:39:44.917Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-27T18:39:44.917Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "EcommerceWebDbContext.cs",
               "DocumentMoniker": "C:\\Users\\user\\source\\repos\\EcommerceWeb\\EcommerceWeb.Infrastructure\\Data\\EcommerceWebDbContext.cs",
               "RelativeDocumentMoniker": "..\\EcommerceWeb.Infrastructure\\Data\\EcommerceWebDbContext.cs",
               "ToolTip": "C:\\Users\\user\\source\\repos\\EcommerceWeb\\EcommerceWeb.Infrastructure\\Data\\EcommerceWebDbContext.cs",
               "RelativeToolTip": "..\\EcommerceWeb.Infrastructure\\Data\\EcommerceWebDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAeAAAAAAAAAA==",
+              "ViewState": "AgIAABoAAAAAAAAAAAAcwB8AAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-27T18:50:38.773Z",
               "EditorCaption": ""
@@ -158,8 +154,7 @@
               "RelativeToolTip": "EcommerceWeb.Web.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-06-27T18:43:27.376Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-27T18:43:27.376Z"
             },
             {
               "$type": "Document",

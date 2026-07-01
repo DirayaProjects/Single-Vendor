@@ -219,6 +219,35 @@
   border: 1px solid #ddd;
 }
 
+.review-rating-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.review-rating-label {
+  font-weight: 600;
+}
+
+.review-stars-input {
+  display: flex;
+  gap: 6px;
+}
+
+.review-star-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.15s;
+}
+
+.review-star-btn:hover {
+  transform: scale(1.15);
+}
+
 .review-login-prompt {
   margin-top: 16px;
 }
@@ -231,6 +260,33 @@
 .empty-reviews {
   color: #666;
   margin-bottom: 16px;
+}
+
+.product-attr-list {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.product-attr-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product-attr-row strong {
+  color: #0f223d;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.product-attr-text {
+  color: #555;
+}
+
+.product-color-swatches {
+  margin-top: 2px;
 }
 
 @media (max-width: 900px) {

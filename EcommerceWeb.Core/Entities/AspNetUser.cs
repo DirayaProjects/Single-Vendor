@@ -49,5 +49,7 @@ public partial class AspNetUser
 
     public virtual UserProfile? UserProfile { get; set; }
 
+    public virtual ICollection<UserSpinWheelResult> UserSpinWheelResults { get; set; } = new List<UserSpinWheelResult>();
+
     public virtual ICollection<AspNetRole> Roles { get; set; } = new List<AspNetRole>();
 }

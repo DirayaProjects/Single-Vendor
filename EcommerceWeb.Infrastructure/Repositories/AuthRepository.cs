@@ -46,4 +46,50 @@ public class AuthRepository : IAuthRepository
 
         return roleNames;
     }
+
+    public Task<bool> ExistsByEmailOrUsernameAsync(string email, string username, CancellationToken cancellationToken = default)
+    {
+        var normalizedEmail = email.ToUpperInvariant();
+        var normalizedUsername = username.ToUpperInvariant();
+
+        return _context.AspNetUsers.AnyAsync(
+            u => u.NormalizedEmail == normalizedEmail || u.NormalizedUserName == normalizedUsername,
+            cancellationToken);
+    }
+
+    public async Task<AspNetUser> CreateAsync(AspNetUser user, CancellationToken cancellationToken = default)
+    {
+        _context.AspNetUsers.Add(user);
+        await _context.SaveChangesAsync(cancellationToken);
+        return user;
+    }
+
+    public async Task AssignRoleAsync(string userId, string roleName, CancellationToken cancellationToken = default)
+    {
+        var user = await _context.AspNetUsers
+            .Include(u => u.Roles)
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+        if (user is null)
+        {
+            throw new InvalidOperationException("User not found.");
+        }
+
+        var normalizedRole = roleName.ToUpperInvariant();
+        var role = await _context.AspNetRoles
+            .FirstOrDefaultAsync(r => r.NormalizedName == normalizedRole, cancellationToken);
+
+        if (role is null)
+        {
+            throw new InvalidOperationException($"Role '{roleName}' not found.");
+        }
+
+        if (user.Roles.Any(r => r.Id == role.Id))
+        {
+            return;
+        }
+
+        user.Roles.Add(role);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
 }

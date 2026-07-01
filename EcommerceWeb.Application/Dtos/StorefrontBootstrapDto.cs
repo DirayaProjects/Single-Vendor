@@ -9,4 +9,8 @@ public class StorefrontBootstrapDto
     public List<StorefrontProductDto> Products { get; set; } = [];
 
     public List<StorefrontTestimonialDto> Testimonials { get; set; } = [];
+
+    public List<PromoAdDto> PromoAds { get; set; } = [];
+
+    public FeatureSettingsDto Features { get; set; } = new();
 }

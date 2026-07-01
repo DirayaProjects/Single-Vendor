@@ -31,6 +31,16 @@ public class CartRepository : ICartRepository
             .FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId, cancellationToken);
     }
 
+    public Task<CartItem?> GetByUserProductAndAttributesAsync(string userId, int productId, string selectedAttributesJson, CancellationToken cancellationToken = default)
+    {
+        return _context.CartItems
+            .FirstOrDefaultAsync(
+                c => c.UserId == userId
+                    && c.ProductId == productId
+                    && (c.SelectedAttributes ?? "{}") == selectedAttributesJson,
+                cancellationToken);
+    }
+
     public async Task<CartItem> AddOrUpdateAsync(CartItem item, CancellationToken cancellationToken = default)
     {
         if (item.Id == 0)

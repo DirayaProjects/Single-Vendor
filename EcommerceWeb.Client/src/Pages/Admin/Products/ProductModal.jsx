@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { uploadImage } from "../../../services/uploadApi";
+import { isColorAttributeName } from "../../../utils/colorAttribute";
+import ColorSwatch from "../../../components/ColorSwatch/ColorSwatch";
 import "./products.css";
 
 function buildAttributeSelection(product, attributes) {
@@ -34,6 +36,7 @@ export default function ProductModal({ product = null, categories = [], attribut
     categoryId: "",
     brand: "",
     price: "",
+    salePrice: "",
     quantity: "",
   });
 
@@ -50,6 +53,7 @@ export default function ProductModal({ product = null, categories = [], attribut
         categoryId: product.categoryId || "",
         brand: product.brand || "",
         price: product.price || "",
+        salePrice: product.salePrice ?? "",
         quantity: product.quantity || "",
       });
       setAttributeSelection(buildAttributeSelection(product, attributes));
@@ -125,6 +129,9 @@ export default function ProductModal({ product = null, categories = [], attribut
     if (!form.name?.trim()) err.name = "Name is required";
     if (!form.categoryId) err.categoryId = "Category is required";
     if (!form.price || Number.isNaN(Number(form.price))) err.price = "Valid price required";
+    if (form.salePrice && Number(form.salePrice) >= Number(form.price)) {
+      err.salePrice = "Sale price must be less than regular price";
+    }
     if (!form.quantity || Number.isNaN(Number(form.quantity))) err.quantity = "Valid quantity required";
     return err;
   };
@@ -157,6 +164,7 @@ export default function ProductModal({ product = null, categories = [], attribut
         categoryId: Number(form.categoryId),
         brand: form.brand,
         price: Number(form.price),
+        salePrice: form.salePrice ? Number(form.salePrice) : null,
         quantity: Number(form.quantity),
         attributes: buildAttributesPayload(attributeSelection),
         images: uploadedUrls,
@@ -201,6 +209,16 @@ export default function ProductModal({ product = null, categories = [], attribut
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
                 />
                 {errors.price && <small className="error">{errors.price}</small>}
+              </label>
+
+              <label style={{ flex: 1 }}>
+                Sale Price
+                <input
+                  value={form.salePrice}
+                  onChange={(e) => setForm({ ...form, salePrice: e.target.value })}
+                  placeholder="Optional"
+                />
+                {errors.salePrice && <small className="error">{errors.salePrice}</small>}
               </label>
 
               <label style={{ flex: 1 }}>
@@ -250,6 +268,23 @@ export default function ProductModal({ product = null, categories = [], attribut
                     </label>
 
                     {attributeSelection[attr.name]?.enabled && (
+                      isColorAttributeName(attr.name) ? (
+                        <div className="attr-color-grid">
+                          {(attr.values || []).map((value) => (
+                            <ColorSwatch
+                              key={value}
+                              color={value}
+                              size="md"
+                              selected={attributeSelection[attr.name]?.values?.includes(value)}
+                              onClick={() => toggleAttributeValue(attr.name, value)}
+                              title={value}
+                            />
+                          ))}
+                          {(attr.values || []).length === 0 && (
+                            <span className="empty-attr-values">No colors defined for this attribute.</span>
+                          )}
+                        </div>
+                      ) : (
                       <div className="attr-values-grid">
                         {(attr.values || []).map((value) => (
                           <label key={value} className="value-checkbox-label">
@@ -265,6 +300,7 @@ export default function ProductModal({ product = null, categories = [], attribut
                           <span className="empty-attr-values">No values defined for this attribute.</span>
                         )}
                       </div>
+                      )
                     )}
                   </div>
                 ))}

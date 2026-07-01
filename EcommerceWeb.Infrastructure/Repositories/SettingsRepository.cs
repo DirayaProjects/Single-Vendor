@@ -43,6 +43,12 @@ public class SettingsRepository : ISettingsRepository
         existing.InstagramUrl = settings.InstagramUrl;
         existing.TwitterUrl = settings.TwitterUrl;
         existing.TikTokUrl = settings.TikTokUrl;
+        existing.SpinWheelEnabled = settings.SpinWheelEnabled;
+        existing.SpinWheelVisible = settings.SpinWheelVisible;
+        existing.FirstOrderDiscountEnabled = settings.FirstOrderDiscountEnabled;
+        existing.FirstOrderDiscountPercent = settings.FirstOrderDiscountPercent;
+        existing.FirstOrderDiscountAmount = settings.FirstOrderDiscountAmount;
+        existing.GeneralDiscountsEnabled = settings.GeneralDiscountsEnabled;
         existing.UpdatedAt = settings.UpdatedAt;
 
         await _context.SaveChangesAsync(cancellationToken);

@@ -1,0 +1,48 @@
+.product-attribute-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.attr-selector-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attr-selector-label {
+  font-weight: 600;
+  color: #0f223d;
+  font-size: 14px;
+}
+
+.attr-selector-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attr-selector-options.color-options {
+  gap: 10px;
+}
+
+.attr-option-btn {
+  border: 1.5px solid #d8dee8;
+  background: #fff;
+  color: #0f223d;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.attr-option-btn:hover {
+  border-color: #0f223d;
+}
+
+.attr-option-btn.selected {
+  border-color: #0f223d;
+  background: #0f223d;
+  color: #fff;
+}

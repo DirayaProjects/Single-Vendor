@@ -1,5 +1,6 @@
 async function parseResponse(response) {
-  const data = await response.json();
+  const text = await response.text();
+  const data = text ? JSON.parse(text) : {};
   if (!response.ok) {
     throw new Error(data.message || "Cart request failed");
   }
@@ -11,11 +12,11 @@ export async function getCart(userId) {
   return parseResponse(response);
 }
 
-export async function addToCart(userId, productId, quantity = 1) {
+export async function addToCart(userId, productId, quantity = 1, selectedAttributes = {}) {
   const response = await fetch("/api/cart", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, productId, quantity }),
+    body: JSON.stringify({ userId, productId, quantity, selectedAttributes }),
   });
   return parseResponse(response);
 }

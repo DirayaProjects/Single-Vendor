@@ -8,34 +8,60 @@ import AuthModal from "../../components/AuthModal/AuthModal";
 import { Link } from "react-router-dom";
 import { useStorefront } from "../../contexts/StorefrontContext";
 import { useCart } from "../../contexts/CartContext";
+import { useFavorites } from "../../contexts/FavoritesContext";
 import { storePath } from "../../services/storefrontApi";
 import { sizedImageUrl } from "../../services/uploadApi";
+import PriceDisplay from "../../components/PriceDisplay/PriceDisplay";
+import AddToCartModal from "../../components/AddToCartModal/AddToCartModal";
+import { productHasAttributes } from "../../utils/productAttributes";
+import { savePendingCartAdd } from "../../utils/pendingCartStorage";
 
 const LandingPage = () => {
-  const { slug, settings, products } = useStorefront();
-  const { itemCount, addItem } = useCart();
-  const [favorites, setFavorites] = useState([]);
+  const { slug, settings, products, promoAds } = useStorefront();
+  const { itemCount, addItem, refreshCart } = useCart();
+  const { isFavorite, toggleFavorite, refreshFavorites } = useFavorites();
   const [showAuth, setShowAuth] = useState(false);
   const [addedProducts, setAddedProducts] = useState([]);
+  const [cartModalProduct, setCartModalProduct] = useState(null);
+  const [cartModalInitial, setCartModalInitial] = useState({ quantity: 1, attributes: {} });
 
   const featuredProducts = products.slice(0, 6);
   const bestSellers = products.slice(0, 3);
   const bannerImage = sizedImageUrl(settings?.banner, "large") || settings?.banner;
+  const landingPromos = (promoAds || []).slice(0, 3);
 
-  const toggleFavorite = (id) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
-    );
+  const handleToggleFavorite = async (e, productId) => {
+    e.preventDefault();
+    try {
+      const result = await toggleFavorite(productId);
+      if (result?.needsLogin) {
+        setShowAuth(true);
+      }
+    } catch (err) {
+      alert(err.message || "Failed to update wishlist");
+    }
   };
 
-  const handleAddToCart = async (productId) => {
+  const handleAddToCart = async (product) => {
+    if (productHasAttributes(product.attributes)) {
+      setCartModalInitial({ quantity: 1, attributes: {} });
+      setCartModalProduct(product);
+      return;
+    }
+
     try {
-      const result = await addItem(productId, 1);
+      const result = await addItem(product.id, 1);
       if (result?.needsLogin) {
+        savePendingCartAdd({
+          productId: product.id,
+          quantity: 1,
+          selectedAttributes: {},
+          product,
+        });
         setShowAuth(true);
         return;
       }
-      setAddedProducts((prev) => [...prev, productId]);
+      setAddedProducts((prev) => [...prev, product.id]);
     } catch (err) {
       alert(err.message || "Failed to add to cart");
     }
@@ -59,13 +85,35 @@ const LandingPage = () => {
       </section>
 
       <section className="promos">
-        {categoriesPromo(products).map((promo) => (
-          <div className="promo-card" key={promo.id}>
-            <h3>{promo.label}</h3>
-            <h1>{promo.value}</h1>
-            <p>{promo.sub}</p>
-          </div>
-        ))}
+        {landingPromos.length > 0 ? (
+          landingPromos.map((ad) => (
+            <PromoHighlightCard key={ad.id} ad={ad} />
+          ))
+        ) : (
+          <>
+            <div className="promo-card promo-card-placeholder">
+              <div className="promo-card-text">
+                <h3>DEALS</h3>
+                <h1>—</h1>
+                <p>Coming soon</p>
+              </div>
+            </div>
+            <div className="promo-card promo-card-placeholder">
+              <div className="promo-card-text">
+                <h3>SHOP</h3>
+                <h1>—</h1>
+                <p>Browse catalog</p>
+              </div>
+            </div>
+            <div className="promo-card promo-card-placeholder">
+              <div className="promo-card-text">
+                <h3>NEW</h3>
+                <h1>—</h1>
+                <p>Stay tuned</p>
+              </div>
+            </div>
+          </>
+        )}
       </section>
 
       <section className="products">
@@ -80,21 +128,19 @@ const LandingPage = () => {
                   {image ? (
                     <img src={image} alt={product.name} className="product-thumb" />
                   ) : (
-                    <div className="image-placeholder">
-                      <FaHeart
-                        className={`fav-icon ${favorites.includes(product.id) ? "favorited" : ""}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          toggleFavorite(product.id);
-                        }}
-                      />
-                    </div>
+                    <div className="image-placeholder" />
                   )}
+                  <FaHeart
+                    className={`fav-icon ${isFavorite(product.id) ? "favorited" : ""}`}
+                    onClick={(e) => handleToggleFavorite(e, product.id)}
+                  />
                 </Link>
                 <div className="product-info">
                   <h4>{product.name}</h4>
                   <p>{product.details || "—"}</p>
-                  <p className="price">${Number(product.price).toFixed(2)}</p>
+                  <p className="price">
+                    <PriceDisplay price={product.price} salePrice={product.salePrice} effectivePrice={product.effectivePrice} />
+                  </p>
                   <div className="stars">
                     {[...Array(5)].map((_, j) => (
                       <FaStar
@@ -103,8 +149,8 @@ const LandingPage = () => {
                       />
                     ))}
                   </div>
-                  {!addedProducts.includes(product.id) && (
-                    <button className="add-btn" onClick={() => handleAddToCart(product.id)}>
+                  {(!addedProducts.includes(product.id) || productHasAttributes(product.attributes)) && (
+                    <button className="add-btn" onClick={() => handleAddToCart(product)}>
                       Add to cart
                     </button>
                   )}
@@ -119,6 +165,14 @@ const LandingPage = () => {
         <div className="view-all-container">
           <Link to={storePath(slug, "products")} className="view-all-btn">
             View All Products
+          </Link>
+        </div>
+      )}
+
+      {landingPromos.length > 0 && (
+        <div className="view-all-container promos-view-all">
+          <Link to={storePath(slug, "deals")} className="view-all-btn">
+            View All Deals
           </Link>
         </div>
       )}
@@ -143,12 +197,31 @@ const LandingPage = () => {
       <Testimonials />
       <Footer />
 
+      {cartModalProduct && (
+        <AddToCartModal
+          product={cartModalProduct}
+          initialQuantity={cartModalInitial.quantity}
+          initialAttributes={cartModalInitial.attributes}
+          onClose={() => {
+            setCartModalProduct(null);
+            setCartModalInitial({ quantity: 1, attributes: {} });
+          }}
+          onAdded={(productId) => setAddedProducts((prev) => [...prev, productId])}
+          onNeedsLogin={() => {
+            setCartModalProduct(null);
+            setShowAuth(true);
+          }}
+        />
+      )}
+
       {showAuth && (
         <AuthModal
           mode="login"
           onClose={() => setShowAuth(false)}
           onSuccess={() => {
             setShowAuth(false);
+            refreshFavorites();
+            refreshCart();
           }}
         />
       )}
@@ -156,21 +229,48 @@ const LandingPage = () => {
   );
 };
 
-function categoriesPromo(products) {
-  if (products.length === 0) {
-    return [
-      { id: 1, label: "NEW", value: "—", sub: "Products coming soon" },
-      { id: 2, label: "SHOP", value: "—", sub: "Browse catalog" },
-      { id: 3, label: "DEALS", value: "—", sub: "Stay tuned" },
-    ];
+function PromoHighlightCard({ ad }) {
+  const label = ad.subtitle || "";
+  const value = ad.title || "";
+  const tagline = ad.description || "";
+  const promoImage = sizedImageUrl(ad.image, "medium") || ad.image;
+  const hasLink = Boolean(ad.linkUrl?.trim());
+  const className = `promo-card${hasLink ? " promo-card-clickable" : ""}`;
+
+  const content = (
+    <>
+      {promoImage && (
+        <div className="promo-card-image-wrap">
+          <img src={promoImage} alt={value || label || "Promotion"} className="promo-card-image" />
+        </div>
+      )}
+      <div className="promo-card-text">
+        {label ? <h3>{label}</h3> : null}
+        <h1>{value}</h1>
+        {tagline ? <p>{tagline}</p> : null}
+      </div>
+    </>
+  );
+
+  if (!hasLink) {
+    return <article className={className}>{content}</article>;
   }
 
-  const topPrice = Math.max(...products.map((p) => Number(p.price)));
-  return [
-    { id: 1, label: "FROM", value: `$${Math.min(...products.map((p) => Number(p.price))).toFixed(0)}`, sub: "STARTING" },
-    { id: 2, label: "TOP", value: `$${topPrice.toFixed(0)}`, sub: "PICKS" },
-    { id: 3, label: "ITEMS", value: String(products.length), sub: "IN STORE" },
-  ];
+  const link = ad.linkUrl.trim();
+  const external = /^https?:\/\//i.test(link);
+  if (external) {
+    return (
+      <a href={link} className={className} target="_blank" rel="noreferrer">
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <a href={link} className={className}>
+      {content}
+    </a>
+  );
 }
 
 export default LandingPage;

@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getAuthSession } from "../services/authApi";
+import { AUTH_CHANGED_EVENT, getAuthSession } from "../services/authApi";
 import { addToCart as addToCartApi, getCart, removeCartItem, updateCartItem } from "../services/cartApi";
+import { clearPendingCartAdd, getPendingCartAdd, savePendingCartAdd } from "../utils/pendingCartStorage";
 
 const CartContext = createContext(null);
 
@@ -25,6 +26,23 @@ export function CartProvider({ children }) {
 
     try {
       setLoading(true);
+      const pending = getPendingCartAdd();
+      if (pending?.productId) {
+        clearPendingCartAdd();
+        try {
+          const data = await addToCartApi(
+            session.userId,
+            pending.productId,
+            pending.quantity ?? 1,
+            pending.selectedAttributes ?? {}
+          );
+          setCart(data);
+          return;
+        } catch {
+          savePendingCartAdd(pending);
+        }
+      }
+
       const data = await getCart(session.userId);
       setCart(data);
     } catch {
@@ -38,13 +56,21 @@ export function CartProvider({ children }) {
     refreshCart();
   }, [refreshCart]);
 
-  const addItem = async (productId, quantity = 1) => {
+  useEffect(() => {
+    const onAuthChanged = () => {
+      refreshCart();
+    };
+    window.addEventListener(AUTH_CHANGED_EVENT, onAuthChanged);
+    return () => window.removeEventListener(AUTH_CHANGED_EVENT, onAuthChanged);
+  }, [refreshCart]);
+
+  const addItem = async (productId, quantity = 1, selectedAttributes = {}) => {
     const session = getCustomerSession();
     if (!session) {
       return { needsLogin: true };
     }
 
-    const data = await addToCartApi(session.userId, productId, quantity);
+    const data = await addToCartApi(session.userId, productId, quantity, selectedAttributes);
     setCart(data);
     return { needsLogin: false };
   };

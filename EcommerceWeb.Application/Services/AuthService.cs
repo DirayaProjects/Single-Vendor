@@ -8,11 +8,16 @@ public class AuthService : IAuthService
 {
     private readonly IAuthRepository _authRepository;
     private readonly IPasswordVerifier _passwordVerifier;
+    private readonly IUserProfileRepository _userProfileRepository;
 
-    public AuthService(IAuthRepository authRepository, IPasswordVerifier passwordVerifier)
+    public AuthService(
+        IAuthRepository authRepository,
+        IPasswordVerifier passwordVerifier,
+        IUserProfileRepository userProfileRepository)
     {
         _authRepository = authRepository;
         _passwordVerifier = passwordVerifier;
+        _userProfileRepository = userProfileRepository;
     }
 
     public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request, CancellationToken cancellationToken = default)
@@ -49,6 +54,72 @@ public class AuthService : IAuthService
             Roles = roles,
             IsAdmin = isAdmin,
             RedirectUrl = isAdmin ? "/admin/dashboard" : "/home"
+        };
+    }
+
+    public async Task<LoginResponseDto> RegisterAsync(RegisterRequestDto request, CancellationToken cancellationToken = default)
+    {
+        var userName = request.UserName?.Trim() ?? string.Empty;
+        var email = request.Email?.Trim() ?? string.Empty;
+        var password = request.Password ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            return new LoginResponseDto
+            {
+                Success = false,
+                Message = "Username, email, and password are required."
+            };
+        }
+
+        if (password.Length < 6)
+        {
+            return new LoginResponseDto
+            {
+                Success = false,
+                Message = "Password must be at least 6 characters."
+            };
+        }
+
+        if (await _authRepository.ExistsByEmailOrUsernameAsync(email, userName, cancellationToken))
+        {
+            return new LoginResponseDto
+            {
+                Success = false,
+                Message = "An account with that email or username already exists."
+            };
+        }
+
+        var user = new Core.Entities.AspNetUser
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserName = userName,
+            NormalizedUserName = userName.ToUpperInvariant(),
+            Email = email,
+            NormalizedEmail = email.ToUpperInvariant(),
+            EmailConfirmed = false,
+            SecurityStamp = Guid.NewGuid().ToString(),
+            ConcurrencyStamp = Guid.NewGuid().ToString(),
+            LockoutEnabled = true
+        };
+
+        user.PasswordHash = _passwordVerifier.HashPassword(user, password);
+
+        await _authRepository.CreateAsync(user, cancellationToken);
+        await _authRepository.AssignRoleAsync(user.Id, "Customer", cancellationToken);
+        await _userProfileRepository.EnsureExistsAsync(user.Id, userName, cancellationToken);
+
+        var roles = await _authRepository.GetUserRolesAsync(user.Id, cancellationToken);
+
+        return new LoginResponseDto
+        {
+            Success = true,
+            UserId = user.Id,
+            Email = user.Email,
+            UserName = user.UserName,
+            Roles = roles,
+            IsAdmin = false,
+            RedirectUrl = "/home"
         };
     }
 }

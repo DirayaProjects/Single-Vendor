@@ -29,6 +29,8 @@ public partial class Product
 
     public DateTime? UpdatedAt { get; set; }
 
+    public decimal? SalePrice { get; set; }
+
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     public virtual Category Category { get; set; } = null!;
@@ -40,4 +42,6 @@ public partial class Product
     public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
 
     public virtual ICollection<AttributeValue> AttributeValues { get; set; } = new List<AttributeValue>();
+
+    public virtual ICollection<GeneralDiscount> GeneralDiscounts { get; set; } = new List<GeneralDiscount>();
 }

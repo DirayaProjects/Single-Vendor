@@ -21,4 +21,6 @@ public class SettingsDto
     public string? Tiktok { get; set; }
 
     public string? Slug { get; set; }
+
+    public FeatureSettingsDto Features { get; set; } = new();
 }

@@ -50,6 +50,8 @@ export function StorefrontProvider({ slug, children }) {
       categories: data?.categories || [],
       products: data?.products || [],
       testimonials: data?.testimonials || [],
+      promoAds: data?.promoAds || [],
+      features: data?.features || {},
       loading,
       error,
     }),

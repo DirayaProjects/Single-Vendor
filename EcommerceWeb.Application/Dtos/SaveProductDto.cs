@@ -12,6 +12,8 @@ public class SaveProductDto
 
     public decimal Price { get; set; }
 
+    public decimal? SalePrice { get; set; }
+
     public int Quantity { get; set; }
 
     public List<string> Images { get; set; } = [];

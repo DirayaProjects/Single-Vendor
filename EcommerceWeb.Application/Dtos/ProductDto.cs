@@ -16,6 +16,8 @@ public class ProductDto
 
     public decimal Price { get; set; }
 
+    public decimal? SalePrice { get; set; }
+
     public int Quantity { get; set; }
 
     public decimal Rating { get; set; }

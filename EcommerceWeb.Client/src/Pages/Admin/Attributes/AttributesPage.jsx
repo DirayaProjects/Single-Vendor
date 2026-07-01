@@ -11,6 +11,8 @@ import {
   updateAttribute,
   deleteAttribute,
 } from "../../../services/attributesApi";
+import { isColorAttributeName } from "../../../utils/colorAttribute";
+import ColorSwatch from "../../../components/ColorSwatch/ColorSwatch";
 
 const AttributesPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -19,7 +21,7 @@ const AttributesPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingAttribute, setEditingAttribute] = useState(null);
   const [formData, setFormData] = useState({ name: "", values: [""], date: dayjs().format("YYYY-MM-DD") });
-  const [extraValuesModal, setExtraValuesModal] = useState({ open: false, values: [] });
+  const [extraValuesModal, setExtraValuesModal] = useState({ open: false, values: [], attributeName: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -74,7 +76,8 @@ const AttributesPage = () => {
   const totalPages = Math.max(1, Math.ceil(filteredAttributes.length / itemsPerPage));
 
   const saveModal = async () => {
-    if (!formData.name.trim() || formData.values.some((v) => !v.trim())) return;
+    const cleanedValues = formData.values.map((v) => v.trim()).filter(Boolean);
+    if (!formData.name.trim() || cleanedValues.length === 0) return;
 
     const payload = {
       name: formData.name.trim(),
@@ -107,8 +110,8 @@ const AttributesPage = () => {
     setModalOpen(true);
   };
 
-  const openExtraValuesModal = (values) => setExtraValuesModal({ open: true, values });
-  const closeExtraValuesModal = () => setExtraValuesModal({ open: false, values: [] });
+  const openExtraValuesModal = (values, attributeName) => setExtraValuesModal({ open: true, values, attributeName });
+  const closeExtraValuesModal = () => setExtraValuesModal({ open: false, values: [], attributeName: "" });
 
   return (
     <div className="attributes-page">
@@ -175,16 +178,23 @@ const AttributesPage = () => {
                 {currentAttributes.map((attr) => {
                   const visibleValues = attr.values.slice(0, 2);
                   const hiddenCount = attr.values.length - visibleValues.length;
+                  const isColor = isColorAttributeName(attr.name);
                   return (
                     <tr key={attr.id}>
                       <td>{attr.name}</td>
                       <td>
-                        <div className="values-list">
-                          {visibleValues.map((v, i) => <span key={i} className="value-pill">{v}</span>)}
+                        <div className={`values-list ${isColor ? "color-values-list" : ""}`}>
+                          {visibleValues.map((v, i) =>
+                            isColor ? (
+                              <ColorSwatch key={i} color={v} size="sm" title={v} />
+                            ) : (
+                              <span key={i} className="value-pill">{v}</span>
+                            )
+                          )}
                           {hiddenCount > 0 && (
                             <span
                               className="value-pill more"
-                              onClick={() => openExtraValuesModal(attr.values.slice(2))}
+                              onClick={() => openExtraValuesModal(attr.values.slice(2), attr.name)}
                             >
                               +{hiddenCount} more
                             </span>
@@ -226,6 +236,7 @@ const AttributesPage = () => {
         {extraValuesModal.open && (
           <ExtraValuesModal
             values={extraValuesModal.values}
+            attributeName={extraValuesModal.attributeName}
             closeModal={closeExtraValuesModal}
           />
         )}

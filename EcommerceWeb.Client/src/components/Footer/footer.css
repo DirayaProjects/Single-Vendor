@@ -14,9 +14,10 @@
   gap: 15px;
 }
 
-.footer-right p{
+.footer-right p {
   margin: 0;
-  font-size: 16px;}
+  font-size: 16px;
+}
 
 .social-icons a {
   color: inherit;
@@ -30,4 +31,11 @@
 
 .social-icons svg:hover {
   color: #ffd6d6;
+}
+
+.footer-phone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
 }

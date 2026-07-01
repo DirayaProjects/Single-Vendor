@@ -16,6 +16,12 @@ public class StorefrontProductDto
 
     public decimal Price { get; set; }
 
+    public decimal? SalePrice { get; set; }
+
+    public decimal EffectivePrice { get; set; }
+
+    public bool OnSale { get; set; }
+
     public int Quantity { get; set; }
 
     public decimal Rating { get; set; }

@@ -18,4 +18,9 @@ public class PasswordVerifier : IPasswordVerifier
         var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
         return result != PasswordVerificationResult.Failed;
     }
+
+    public string HashPassword(AspNetUser user, string password)
+    {
+        return _passwordHasher.HashPassword(user, password);
+    }
 }

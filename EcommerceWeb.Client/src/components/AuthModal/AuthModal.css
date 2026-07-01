@@ -1,14 +1,13 @@
 .auth-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(0, 0, 0, 0.65);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 2000;
+  padding: 24px 16px;
+  overflow-y: auto;
 }
 
 .auth-modal {
@@ -16,10 +15,13 @@
   padding: 2rem 2.5rem;
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  width: 90%;
+  width: 100%;
   max-width: 420px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
   position: relative;
   text-align: center;
+  margin: auto;
 }
 
 .close-btn {
@@ -31,16 +33,21 @@
   font-size: 1.6rem;
   color: #333;
   cursor: pointer;
+  z-index: 1;
 }
 
-h2 {
+.auth-modal h2 {
   color: #0b1e3a;
   margin-bottom: 0.5rem;
 }
 
-p {
+.auth-modal p {
   color: #666;
   margin-bottom: 1rem;
+}
+
+.auth-form {
+  text-align: left;
 }
 
 .password-wrapper {
@@ -50,17 +57,18 @@ p {
 
 .auth-input {
   width: 100%;
-  padding: 0.8rem 2.5rem 0.8rem 0.2rem; 
+  padding: 0.8rem 2.5rem 0.8rem 0.9rem;
   margin-bottom: 1rem;
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 1rem;
+  box-sizing: border-box;
 }
 
 .password-toggle {
   position: absolute;
-  top: 40%;
-  right: 12px; 
+  top: 50%;
+  right: 12px;
   transform: translateY(-50%);
   cursor: pointer;
   font-size: 1.2rem;
@@ -70,16 +78,6 @@ p {
 .auth-input:focus {
   border-color: #007bff;
   outline: none;
-}
-
-.eye-icon {
-  position: absolute;
-  right: 10px;
-  top: 10%; 
-  transform: translateY(-50%);
-  cursor: pointer;
-  font-size: 1.2rem;
-  color: #666;
 }
 
 .auth-submit-btn {
@@ -152,4 +150,10 @@ p {
   color: red;
   margin-bottom: 0.8rem;
   font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .auth-modal {
+    padding: 1.5rem 1.25rem;
+  }
 }

@@ -13,4 +13,6 @@ public interface IStorefrontService
         CancellationToken cancellationToken = default);
 
     Task<StorefrontProductDto?> GetProductAsync(string slug, int id, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<PromoAdDto>> GetPromoAdsAsync(string slug, CancellationToken cancellationToken = default);
 }

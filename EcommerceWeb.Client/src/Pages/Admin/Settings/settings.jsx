@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Sidebar from "../../../components/AdminSidebar/sidebar";
 import {
   FaImage,
@@ -13,9 +13,11 @@ import {
 } from "react-icons/fa";
 import { getSettings, updateSettings } from "../../../services/settingsApi";
 import { uploadImage } from "../../../services/uploadApi";
+import SettingsExtras from "./SettingsExtras";
 import "./settings.css";
 
 const SettingsPage = () => {
+  const extrasRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -38,6 +40,14 @@ const SettingsPage = () => {
   const [phone, setPhone] = useState("");
   const [shopSlug, setShopSlug] = useState("");
   const [copyMessage, setCopyMessage] = useState("");
+  const [features, setFeatures] = useState({
+    spinWheelEnabled: false,
+    spinWheelVisible: false,
+    firstOrderDiscountEnabled: true,
+    firstOrderDiscountPercent: 10,
+    firstOrderDiscountAmount: null,
+    generalDiscountsEnabled: false,
+  });
 
   useEffect(() => {
     const load = async () => {
@@ -52,6 +62,7 @@ const SettingsPage = () => {
         setBannerFile(null);
         setPhone(data.phone || "");
         setShopSlug(data.slug || "");
+        if (data.features) setFeatures(data.features);
         setSocials({
           facebook: data.facebook || "",
           instagram: data.instagram || "",
@@ -106,6 +117,10 @@ const SettingsPage = () => {
         setBannerFile(null);
       }
 
+      if (extrasRef.current?.saveAllExtras) {
+        await extrasRef.current.saveAllExtras();
+      }
+
       await updateSettings({
         logoName,
         logo: logoUrl,
@@ -115,6 +130,7 @@ const SettingsPage = () => {
         instagram: socials.instagram,
         twitter: socials.twitter,
         tiktok: socials.tiktok,
+        features,
       });
       const refreshed = await getSettings();
       setShopSlug(refreshed.slug || "");
@@ -292,6 +308,8 @@ const SettingsPage = () => {
                 />
               </div>
             </div>
+
+            <SettingsExtras ref={extrasRef} features={features} onFeaturesChange={setFeatures} />
 
             <button className="save-btn" onClick={handleSave} disabled={saving}>
               <FaSave className="save-icon" /> {saving ? "Saving..." : "Save Changes"}

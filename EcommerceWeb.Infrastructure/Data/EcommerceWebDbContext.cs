@@ -37,7 +37,11 @@ public partial class EcommerceWebDbContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
+    public virtual DbSet<DeliveryCity> DeliveryCities { get; set; }
+
     public virtual DbSet<Favorite> Favorites { get; set; }
+
+    public virtual DbSet<GeneralDiscount> GeneralDiscounts { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -47,11 +51,17 @@ public partial class EcommerceWebDbContext : DbContext
 
     public virtual DbSet<ProductImage> ProductImages { get; set; }
 
+    public virtual DbSet<PromoAd> PromoAds { get; set; }
+
     public virtual DbSet<PromoCode> PromoCodes { get; set; }
+
+    public virtual DbSet<SpinWheelPrize> SpinWheelPrizes { get; set; }
 
     public virtual DbSet<Testimonial> Testimonials { get; set; }
 
     public virtual DbSet<UserProfile> UserProfiles { get; set; }
+
+    public virtual DbSet<UserSpinWheelResult> UserSpinWheelResults { get; set; }
 
     public virtual DbSet<WebsiteSetting> WebsiteSettings { get; set; }
 
@@ -160,10 +170,9 @@ public partial class EcommerceWebDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__CartItem__3214EC074F59E251");
 
-            entity.HasIndex(e => new { e.UserId, e.ProductId }, "UQ_CartItems_User_Product").IsUnique();
-
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
             entity.Property(e => e.Quantity).HasDefaultValue(1);
+            entity.Property(e => e.SelectedAttributes).HasDefaultValue("{}");
 
             entity.HasOne(d => d.Product).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.ProductId)
@@ -187,6 +196,18 @@ public partial class EcommerceWebDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
         });
 
+        modelBuilder.Entity<DeliveryCity>(entity =>
+        {
+            entity.HasIndex(e => new { e.IsActive, e.SortOrder, e.Name }, "IX_DeliveryCities_Active_Sort");
+
+            entity.HasIndex(e => e.Name, "UQ_DeliveryCities_Name").IsUnique();
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.DeliveryFee).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.Name).HasMaxLength(100);
+        });
+
         modelBuilder.Entity<Favorite>(entity =>
         {
             entity.HasKey(e => new { e.UserId, e.ProductId }).HasName("PK__Favorite__DCC800204FF69E8F");
@@ -202,22 +223,66 @@ public partial class EcommerceWebDbContext : DbContext
                 .HasConstraintName("FK_Favorites_AspNetUsers");
         });
 
+        modelBuilder.Entity<GeneralDiscount>(entity =>
+        {
+            entity.HasIndex(e => new { e.IsActive, e.StartDate, e.EndDate }, "IX_GeneralDiscounts_Active_Dates");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.DiscountAmount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.DiscountPercent).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.Name).HasMaxLength(150);
+
+            entity.HasMany(d => d.Products).WithMany(p => p.GeneralDiscounts)
+                .UsingEntity<Dictionary<string, object>>(
+                    "GeneralDiscountProduct",
+                    r => r.HasOne<Product>().WithMany()
+                        .HasForeignKey("ProductId")
+                        .HasConstraintName("FK_GDP_Products"),
+                    l => l.HasOne<GeneralDiscount>().WithMany()
+                        .HasForeignKey("GeneralDiscountId")
+                        .HasConstraintName("FK_GDP_GeneralDiscounts"),
+                    j =>
+                    {
+                        j.HasKey("GeneralDiscountId", "ProductId");
+                        j.ToTable("GeneralDiscountProducts");
+                        j.HasIndex(new[] { "ProductId" }, "IX_GeneralDiscountProducts_Product");
+                    });
+        });
+
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Orders__3214EC079641062C");
 
+            entity.Property(e => e.CustomerAddress).HasMaxLength(500);
+            entity.Property(e => e.CustomerEmail).HasMaxLength(256);
+            entity.Property(e => e.CustomerName).HasMaxLength(150);
+            entity.Property(e => e.CustomerPhone).HasMaxLength(30);
+            entity.Property(e => e.DeliveryCityName).HasMaxLength(100);
             entity.Property(e => e.DeliveryFee).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.Description).HasMaxLength(1000);
             entity.Property(e => e.Discount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.FirstOrderDiscount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.GeneralDiscount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.OrderDate).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.ProductSaleDiscount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.SpinWheelDiscount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.SubTotal).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Total).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UserId).HasMaxLength(450);
 
+            entity.HasOne(d => d.DeliveryCity).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.DeliveryCityId)
+                .HasConstraintName("FK_Orders_DeliveryCities");
+
             entity.HasOne(d => d.PromoCode).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.PromoCodeId)
                 .HasConstraintName("FK_Orders_PromoCodes");
+
+            entity.HasOne(d => d.SpinWheelPrize).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.SpinWheelPrizeId)
+                .HasConstraintName("FK_Orders_SpinWheelPrizes");
 
             entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
@@ -230,6 +295,7 @@ public partial class EcommerceWebDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__OrderIte__3214EC07DC2D6EDC");
 
             entity.Property(e => e.LineTotal).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.OriginalUnitPrice).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ProductName).HasMaxLength(200);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(18, 2)");
 
@@ -253,6 +319,7 @@ public partial class EcommerceWebDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(200);
             entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Rating).HasColumnType("decimal(3, 2)");
+            entity.Property(e => e.SalePrice).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
@@ -287,6 +354,20 @@ public partial class EcommerceWebDbContext : DbContext
                 .HasConstraintName("FK_ProductImages_Products");
         });
 
+        modelBuilder.Entity<PromoAd>(entity =>
+        {
+            entity.HasIndex(e => new { e.IsActive, e.SortOrder, e.Id }, "IX_PromoAds_Active_Sort");
+
+            entity.Property(e => e.ButtonText).HasMaxLength(100);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.Description).HasMaxLength(2000);
+            entity.Property(e => e.ImageUrl).HasMaxLength(1000);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.LinkUrl).HasMaxLength(500);
+            entity.Property(e => e.Subtitle).HasMaxLength(300);
+            entity.Property(e => e.Title).HasMaxLength(200);
+        });
+
         modelBuilder.Entity<PromoCode>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__PromoCod__3214EC072A7EA409");
@@ -297,6 +378,19 @@ public partial class EcommerceWebDbContext : DbContext
             entity.Property(e => e.DiscountAmount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.DiscountPercent).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
+        });
+
+        modelBuilder.Entity<SpinWheelPrize>(entity =>
+        {
+            entity.HasIndex(e => new { e.IsActive, e.SortOrder, e.Id }, "IX_SpinWheelPrizes_Active_Sort");
+
+            entity.Property(e => e.Color).HasMaxLength(20);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.DiscountAmount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.DiscountPercent).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.Label).HasMaxLength(100);
+            entity.Property(e => e.Weight).HasDefaultValue(1);
         });
 
         modelBuilder.Entity<Testimonial>(entity =>
@@ -323,12 +417,35 @@ public partial class EcommerceWebDbContext : DbContext
                 .HasConstraintName("FK_UserProfiles_AspNetUsers");
         });
 
+        modelBuilder.Entity<UserSpinWheelResult>(entity =>
+        {
+            entity.HasIndex(e => new { e.UserId, e.IsUsed, e.WonAt }, "IX_UserSpinWheelResults_User_Unused").IsDescending(false, false, true);
+
+            entity.Property(e => e.WonAt).HasDefaultValueSql("(sysutcdatetime())");
+
+            entity.HasOne(d => d.SpinWheelPrize).WithMany(p => p.UserSpinWheelResults)
+                .HasForeignKey(d => d.SpinWheelPrizeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserSpinWheelResults_SpinWheelPrizes");
+
+            entity.HasOne(d => d.UsedOnOrder).WithMany(p => p.UserSpinWheelResults)
+                .HasForeignKey(d => d.UsedOnOrderId)
+                .HasConstraintName("FK_UserSpinWheelResults_Orders");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserSpinWheelResults)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_UserSpinWheelResults_AspNetUsers");
+        });
+
         modelBuilder.Entity<WebsiteSetting>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__WebsiteS__3214EC076233AB1D");
 
             entity.Property(e => e.BannerUrl).HasMaxLength(1000);
             entity.Property(e => e.FacebookUrl).HasMaxLength(300);
+            entity.Property(e => e.FirstOrderDiscountAmount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.FirstOrderDiscountEnabled).HasDefaultValue(true);
+            entity.Property(e => e.FirstOrderDiscountPercent).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.InstagramUrl).HasMaxLength(300);
             entity.Property(e => e.LogoName).HasMaxLength(150);
             entity.Property(e => e.LogoUrl).HasMaxLength(1000);

@@ -13,5 +13,11 @@ public partial class UserProfile
 
     public DateTime CreatedAt { get; set; }
 
+    public bool FirstOrderDiscountUsed { get; set; }
+
+    public DateTime? FirstOrderDiscountUsedAt { get; set; }
+
+    public bool HasSpunWheel { get; set; }
+
     public virtual AspNetUser User { get; set; } = null!;
 }

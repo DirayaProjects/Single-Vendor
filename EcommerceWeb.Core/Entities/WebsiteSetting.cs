@@ -24,4 +24,16 @@ public partial class WebsiteSetting
     public string? TikTokUrl { get; set; }
 
     public DateTime UpdatedAt { get; set; }
+
+    public bool SpinWheelEnabled { get; set; }
+
+    public bool SpinWheelVisible { get; set; }
+
+    public bool FirstOrderDiscountEnabled { get; set; }
+
+    public decimal? FirstOrderDiscountPercent { get; set; }
+
+    public decimal? FirstOrderDiscountAmount { get; set; }
+
+    public bool GeneralDiscountsEnabled { get; set; }
 }

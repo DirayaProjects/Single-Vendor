@@ -16,6 +16,11 @@ export async function fetchStorefront(slug) {
   return parseResponse(response);
 }
 
+export async function fetchPromoAds(slug) {
+  const response = await fetch(`/api/storefront/${encodeURIComponent(slug)}/promo-ads`);
+  return parseResponse(response);
+}
+
 export async function fetchStorefrontProducts(slug, { categoryId, search } = {}) {
   const params = new URLSearchParams();
   if (categoryId) params.set("categoryId", categoryId);
